@@ -1,0 +1,5 @@
+vendor/*
+.idea
+/bin/
+_vendor*
+*.test
