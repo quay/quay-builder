@@ -27,6 +27,9 @@ bin/quay-builder:
 install:
 	@go install -ldflags $(LD_FLAGS) $(REPO_PATH)/cmd/quay-builder
 
+build-centos7:
+	docker build --squash -f Dockerfile.centos7 -t $(IMAGE):$(IMAGE_TAG)-centos7 .
+
 build-rhel7:
 	docker build --squash -f Dockerfile.rhel7 -t $(IMAGE):$(IMAGE_TAG)-rhel7 . \
 		--build-arg SUBSCRIPTION_KEY=$(SUBSCRIPTION_KEY)
