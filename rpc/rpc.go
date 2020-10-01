@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"context"
 	"errors"
 	"fmt"
 )
@@ -16,6 +17,8 @@ const (
 	PullingBaseImage Phase = "pulling"
 	Building         Phase = "building"
 	Pushing          Phase = "pushing"
+	Complete         Phase = "complete"
+	Error            Phase = "error"
 )
 
 // InvalidDockerfileError is the type of error returned from a BuildCallback when the
@@ -177,10 +180,6 @@ type BuildMetadata struct {
 	Digests []string
 }
 
-// BuildCallback is a type of function that can be executed via remote RPC
-// from a BuildManager when a build is issued.
-type BuildCallback func(Client, *BuildArgs) (*BuildMetadata, error)
-
 // ErrNoSimilarTags is returned from a Client when FindMostSimilarTag fails
 // to find any similar tags.
 var ErrNoSimilarTags = errors.New("failed to find any similar tags")
@@ -188,18 +187,17 @@ var ErrNoSimilarTags = errors.New("failed to find any similar tags")
 // Client represents an implementation of a transport between a Builder and a
 // BuildManager.
 type Client interface {
-	// Connect establishes a connection to a BuildManager.
-	Connect(endpoint string) error
+	// Attemps to ping the server
+	Ping() (bool, error)
 
-	// ListenAndServe blocks awaiting a request to build from a BuildManager.
-	ListenAndServe()
+	// RegisterBuild
+	RegisterBuildJob(string) (*BuildArgs, error)
+
+	// Heartbeat
+	Heartbeat(context.Context)
 
 	// SetPhase informs a BuildManager of a transition between Phases.
 	SetPhase(Phase, *PullMetadata) error
-
-	// RegisterBuildCallback configures a client to call the provided
-	// BuildCallback when a request to build is received from a BuildManager.
-	RegisterBuildCallback(BuildCallback) error
 
 	// FindMostSimilarTag sends a synchronous request to a BuildManager in order
 	// to determine if there is a suitable docker tag to pull in order to prime
