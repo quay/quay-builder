@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	dockerclient "github.com/fsouza/go-dockerclient"
-	"github.com/nu7hatch/gouuid"
 	log "github.com/sirupsen/logrus"
 
+	uuid "github.com/nu7hatch/gouuid"
 	"github.com/quay/quay-builder/buildpack"
 	"github.com/quay/quay-builder/docker"
 	"github.com/quay/quay-builder/docker/dockerfile"
@@ -83,7 +83,7 @@ func (bc *Context) Unpack() error {
 
 // Pull executes "docker pull" for the base image of the build's Dockerfile.
 func (bc *Context) Pull() error {
-	if err := bc.client.SetPhase(rpc.PullingBaseImage, &rpc.PullMetadata{
+	if err := bc.client.SetPhase(rpc.Pulling, &rpc.PullMetadata{
 		RegistryURL:  bc.args.Registry,
 		BaseImage:    bc.metadata.BaseImage,
 		BaseImageTag: bc.metadata.BaseImageTag,

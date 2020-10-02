@@ -10,15 +10,15 @@ import (
 type Phase string
 
 const (
-	Starting         Phase = "starting"
-	Unpacking        Phase = "unpacking"
-	CheckingCache    Phase = "checking-cache"
-	PrimingCache     Phase = "priming-cache"
-	PullingBaseImage Phase = "pulling"
-	Building         Phase = "building"
-	Pushing          Phase = "pushing"
-	Complete         Phase = "complete"
-	Error            Phase = "error"
+	Waiting       Phase = "Waiting"
+	Unpacking     Phase = "unpacking"
+	CheckingCache Phase = "checking-cache"
+	PrimingCache  Phase = "priming-cache"
+	Pulling       Phase = "pulling"
+	Building      Phase = "building"
+	Pushing       Phase = "pushing"
+	Complete      Phase = "complete"
+	Error         Phase = "error"
 )
 
 // InvalidDockerfileError is the type of error returned from a BuildCallback when the
