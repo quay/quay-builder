@@ -103,12 +103,21 @@ func (c *grpcClient) SetPhase(phase rpc.Phase, pmd *rpc.PullMetadata) error {
 	c.currentPhase = phase
 	c.phaseSequenceNum += 1
 
+	statusData := &pb.SetPhaseRequest_PullMetadata{}
+	if pmd != nil {
+		statusData.RegistryUrl = pmd.RegistryURL
+		statusData.BaseImage = pmd.BaseImage
+		statusData.BaseImageTag = pmd.BaseImageTag
+		statusData.PullUsername = pmd.PullUsername
+	}
+
 	phaseResponse, err := c.client.SetPhase(
 		ctx,
 		&pb.SetPhaseRequest{
 			JobJwt:         c.jobToken,
 			SequenceNumber: int32(c.phaseSequenceNum),
 			Phase:          phaseEnum(phase),
+			PullMetadata:   statusData,
 		},
 	)
 	if err != nil {
@@ -172,7 +181,7 @@ func (c *grpcClient) PublishBuildLogEntry(entry string) error {
 		log.Warningf("failed to get log response: %s", err)
 	}
 
-	if !logResp.GetSucceeded() {
+	if !logResp.GetSuccess() {
 		log.Warningf("buildmanager failed to log message: %d", c.logSequenceNum)
 	}
 
@@ -192,6 +201,10 @@ func (c *grpcClient) Heartbeat(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		default:
+			if failedHeartbeatRetries == 0 {
+				log.Fatalf("failed to update heartbeat too many times")
+			}
+
 			// Send heartbeat
 			err := heartbeatStream.Send(&pb.HeartbeatRequest{JobJwt: c.jobToken})
 			if err != nil {
@@ -209,6 +222,12 @@ func (c *grpcClient) Heartbeat(ctx context.Context) {
 				break
 			}
 
+			if hearbeatResp.GetReply() {
+				log.Infof("successfully sent heartbeat to BuildManager")
+				failedHeartbeatRetries = 3
+				break
+			}
+
 			// Retry if for some reason heartbeat was not updated
 			if !hearbeatResp.GetReply() && failedHeartbeatRetries > 0 {
 				log.Infof("heartbeat failed to update, retrying right away")
@@ -216,7 +235,7 @@ func (c *grpcClient) Heartbeat(ctx context.Context) {
 				continue
 			}
 		}
-		log.Infof("successfully sent heartbeat to BuildManager")
+
 		time.Sleep(2 * time.Second)
 	}
 }
