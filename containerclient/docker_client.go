@@ -1,4 +1,4 @@
-package docker
+package containerclient
 
 import (
 	"crypto/tls"
@@ -10,18 +10,6 @@ import (
 
 	"github.com/fsouza/go-dockerclient"
 )
-
-// Client is an interface for all of the Docker™ interactions required of a
-// worker.
-type Client interface {
-	BuildImage(docker.BuildImageOptions) error
-	PullImage(docker.PullImageOptions, docker.AuthConfiguration) error
-	PushImage(docker.PushImageOptions, docker.AuthConfiguration) error
-	TagImage(string, docker.TagImageOptions) error
-	InspectImage(string) (*docker.Image, error)
-	RemoveImageExtended(string, docker.RemoveImageOptions) error
-	PruneImages(docker.PruneImagesOptions) (*docker.PruneImagesResults, error)
-}
 
 // NewClient returns a new connection to the Docker daemon running at the
 // provided host.

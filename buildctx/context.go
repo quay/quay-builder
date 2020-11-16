@@ -10,8 +10,8 @@ import (
 
 	uuid "github.com/nu7hatch/gouuid"
 	"github.com/quay/quay-builder/buildpack"
-	"github.com/quay/quay-builder/docker"
-	"github.com/quay/quay-builder/docker/dockerfile"
+	"github.com/quay/quay-builder/containerclient"
+	"github.com/quay/quay-builder/containerclient/dockerfile"
 	"github.com/quay/quay-builder/rpc"
 )
 
@@ -27,8 +27,8 @@ const (
 // Context represents the internal state of a build.
 type Context struct {
 	client       rpc.Client
-	writer       docker.LogWriter
-	dockerClient docker.Client
+	writer       containerclient.LogWriter
+	dockerClient containerclient.Client
 	args         *rpc.BuildArgs
 	metadata     *dockerfile.Metadata
 	buildpackDir string
@@ -43,7 +43,7 @@ type Context struct {
 func New(client rpc.Client, args *rpc.BuildArgs, dockerHost string) (*Context, error) {
 	// Connect to the local docker client.
 	log.Infof("connecting to docker host: %s", dockerHost)
-	dockerClient, err := docker.NewClient(dockerHost)
+	dockerClient, err := containerclient.NewClient(dockerHost)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func New(client rpc.Client, args *rpc.BuildArgs, dockerHost string) (*Context, e
 
 	return &Context{
 		client:       client,
-		writer:       docker.NewRPCWriter(client),
+		writer:       containerclient.NewRPCWriter(client),
 		dockerClient: dockerClient,
 		args:         args,
 	}, nil
@@ -164,7 +164,7 @@ func (bc *Context) Push() (*rpc.BuildMetadata, error) {
 
 // retryDockerRequest retries attempts to execute a closure that alters that
 // state of the docker daemon until it succeeds.
-func retryDockerRequest(w docker.LogWriter, requestFunc func() error) (err error) {
+func retryDockerRequest(w containerclient.LogWriter, requestFunc func() error) (err error) {
 	for i := 0; i < 3; i++ {
 		// Explicitly throw away the errors from any previous attempts to pull.
 		w.ResetError()
@@ -188,7 +188,7 @@ func retryDockerRequest(w docker.LogWriter, requestFunc func() error) (err error
 	return nil
 }
 
-func primeCache(w docker.LogWriter, dockerClient docker.Client, args *rpc.BuildArgs, cachedTag string) error {
+func primeCache(w containerclient.LogWriter, dockerClient containerclient.Client, args *rpc.BuildArgs, cachedTag string) error {
 	if cachedTag == "" {
 		// There's nothing to do!
 		return nil
@@ -219,7 +219,7 @@ func primeCache(w docker.LogWriter, dockerClient docker.Client, args *rpc.BuildA
 	return nil
 }
 
-func pullBaseImage(w docker.LogWriter, dockerClient docker.Client, df *dockerfile.Metadata, args *rpc.BuildArgs) error {
+func pullBaseImage(w containerclient.LogWriter, dockerClient containerclient.Client, df *dockerfile.Metadata, args *rpc.BuildArgs) error {
 	// Skip pulling the base image if it's "scratch" which is a built-in image
 	// that throws an error after executing `docker pull`.
 	if df.BaseImage == scratchImageName {
@@ -258,7 +258,7 @@ func pullBaseImage(w docker.LogWriter, dockerClient docker.Client, df *dockerfil
 	return nil
 }
 
-func findCachedTag(w docker.LogWriter, client rpc.Client, dockerClient docker.Client, df *dockerfile.Metadata) (string, error) {
+func findCachedTag(w containerclient.LogWriter, client rpc.Client, dockerClient containerclient.Client, df *dockerfile.Metadata) (string, error) {
 	log.Infof("querying Docker for the ID of the pulled base image: %s:%s", df.BaseImage, df.BaseImageTag)
 	var baseImageID string
 	if df.BaseImage == scratchImageName {
@@ -287,7 +287,7 @@ func findCachedTag(w docker.LogWriter, client rpc.Client, dockerClient docker.Cl
 	})
 }
 
-func pushBuiltImage(w docker.LogWriter, dockerClient docker.Client, args *rpc.BuildArgs, imageID string) (string, []string, error) {
+func pushBuiltImage(w containerclient.LogWriter, dockerClient containerclient.Client, args *rpc.BuildArgs, imageID string) (string, []string, error) {
 	// Push each new tag for the image.
 	for _, tagName := range args.TagNames {
 		// Setup tag options.
@@ -387,7 +387,7 @@ func (bc *Context) Cleanup(builtImageID string) error {
 	return nil
 }
 
-func executeBuild(w docker.LogWriter, dockerClient docker.Client, buildPackageDirectory string, dockerFileName string, repo string, cacheTag string) (string, error) {
+func executeBuild(w containerclient.LogWriter, dockerClient containerclient.Client, buildPackageDirectory string, dockerFileName string, repo string, cacheTag string) (string, error) {
 	buildUUID, err := uuid.NewV4()
 	if err != nil {
 		return "", err
