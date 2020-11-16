@@ -5,11 +5,12 @@ import (
 	"net/url"
 
 	"github.com/containers/podman/v2/pkg/bindings"
+
+	"github.com/quay/quay-builder/containerclient"
 )
 
-type podmanClient struct{
+type podmanClient struct {
 	podmanContext context.Context
-	
 }
 
 func NewClient(host string) (*podmanClient, error) {
@@ -27,6 +28,34 @@ func NewClient(host string) (*podmanClient, error) {
 	c := &podmanClient{
 		podmanContext: pmContext,
 	}
-		
+
 	return c, nil
+}
+
+func (c *podmanClient) BuildImage(containerclient.BuildImageOptions) error {
+	return nil
+}
+
+func (c *podmanClient) PullImage(containerclient.PullImageOptions, containerclient.AuthConfiguration) error {
+	return nil
+}
+
+func (c *podmanClient) PushImage(containerclient.PushImageOptions, containerclient.AuthConfiguration) error {
+	return nil
+}
+
+func (c *podmanClient) TagImage(string, containerclient.TagImageOptions) error {
+	return nil
+}
+
+func (c *podmanClient) InspectImage(string) (*containerclient.Image, error) {
+	return nil, nil
+}
+
+func (c *podmanClient) RemoveImageExtended(string, containerclient.RemoveImageOptions) error {
+	return nil
+}
+
+func (c *podmanClient) PruneImages(containerclient.PruneImagesOptions) (*containerclient.PruneImagesResults, error) {
+	return nil, nil
 }
