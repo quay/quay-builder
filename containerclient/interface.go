@@ -11,7 +11,7 @@ type BuildImageOptions struct {
 	Name                string
 	NoCache             bool
 	CacheFrom           []string
-	Quiet               bool
+	SuppressOutput      bool
 	RmTmpContainer      bool
 	ForceRmTmpContainer bool
 	OutputStream        io.Writer

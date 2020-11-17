@@ -14,6 +14,7 @@ replace golang.org/x/sys => golang.org/x/sys v0.0.0-20200826173525-f9321e4c35a6
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20200131002800-4ca7245c29b1 // indirect
 	github.com/cloudfoundry/archiver v0.0.0-20200131002800-4ca7245c29b1
+	github.com/containers/buildah v1.16.1
 	github.com/containers/podman/v2 v2.1.1
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/docker/docker v17.12.0-ce-rc1.0.20200917150144-3956a86b6235+incompatible
