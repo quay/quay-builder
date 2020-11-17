@@ -1,9 +1,9 @@
 package containerclient
 
 import (
+	"fmt"
 	"io"
-
-	"github.com/fsouza/go-dockerclient"
+	"strings"
 )
 
 type BuildImageOptions struct {
@@ -65,11 +65,24 @@ type PruneImagesResults struct {
 // Client is an interface for all of the container/image interactions required of a
 // worker. This includes Docker and/or Podman
 type Client interface {
-	BuildImage(docker.BuildImageOptions) error
-	PullImage(docker.PullImageOptions, docker.AuthConfiguration) error
-	PushImage(docker.PushImageOptions, docker.AuthConfiguration) error
-	TagImage(string, docker.TagImageOptions) error
-	InspectImage(string) (*docker.Image, error)
-	RemoveImageExtended(string, docker.RemoveImageOptions) error
-	PruneImages(docker.PruneImagesOptions) (*docker.PruneImagesResults, error)
+	BuildImage(BuildImageOptions) error
+	PullImage(PullImageOptions, AuthConfiguration) error
+	PushImage(PushImageOptions, AuthConfiguration) error
+	TagImage(string, TagImageOptions) error
+	InspectImage(string) (*Image, error)
+	RemoveImageExtended(string, RemoveImageOptions) error
+	PruneImages(PruneImagesOptions) (*PruneImagesResults, error)
+}
+
+func NewClient(host, runtime string) (Client, error) {
+	runtime = strings.ToLower(runtime)
+	if runtime != "docker" || runtime != "podman" {
+		return nil, fmt.Errorf("Invalid container runtime: %s", runtime)
+	}
+
+	if runtime == "docker" {
+		return NewDockerClient(host)
+	} else {
+		return NewPodmanClient(host)
+	}
 }
