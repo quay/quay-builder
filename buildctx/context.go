@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	dockerclient "github.com/fsouza/go-dockerclient"
 	log "github.com/sirupsen/logrus"
 
 	uuid "github.com/nu7hatch/gouuid"
@@ -28,7 +27,7 @@ const (
 type Context struct {
 	client       rpc.Client
 	writer       containerclient.LogWriter
-	dockerClient containerclient.Client
+	containerClient containerclient.Client
 	args         *rpc.BuildArgs
 	metadata     *dockerfile.Metadata
 	buildpackDir string
@@ -40,10 +39,10 @@ type Context struct {
 // context.
 //
 // If the connection to the docker daemon fails, exits with log.Fatal.
-func New(client rpc.Client, args *rpc.BuildArgs, dockerHost string) (*Context, error) {
+func New(client rpc.Client, args *rpc.BuildArgs, dockerHost, containerRuntime string) (*Context, error) {
 	// Connect to the local docker client.
 	log.Infof("connecting to docker host: %s", dockerHost)
-	dockerClient, err := containerclient.NewClient(dockerHost)
+	containerClient, err := containerclient.NewClient(dockerHost, containerRuntime)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,7 +51,7 @@ func New(client rpc.Client, args *rpc.BuildArgs, dockerHost string) (*Context, e
 	return &Context{
 		client:       client,
 		writer:       containerclient.NewRPCWriter(client),
-		dockerClient: dockerClient,
+		containerClient: containerClient,
 		args:         args,
 	}, nil
 }
@@ -92,7 +91,7 @@ func (bc *Context) Pull() error {
 		return err
 	}
 
-	return pullBaseImage(bc.writer, bc.dockerClient, bc.metadata, bc.args)
+	return pullBaseImage(bc.writer, bc.containerClient, bc.metadata, bc.args)
 }
 
 // Cache calls an RPC to the BuildManager to find the best tag to pull for
@@ -104,7 +103,7 @@ func (bc *Context) Cache() error {
 
 	// Attempt to calculate the optimal tag. If we cannot find a tag, then caching is simply
 	// skipped.
-	cachedTag, err := findCachedTag(bc.writer, bc.client, bc.dockerClient, bc.metadata)
+	cachedTag, err := findCachedTag(bc.writer, bc.client, bc.containerClient, bc.metadata)
 	if err != nil {
 		log.Warningf("Failed to lookup caching tag: %v", err)
 		return nil
@@ -116,7 +115,7 @@ func (bc *Context) Cache() error {
 			return err
 		}
 
-		err = primeCache(bc.writer, bc.dockerClient, bc.args, cachedTag)
+		err = primeCache(bc.writer, bc.containerClient, bc.args, cachedTag)
 		if err != nil {
 			log.Warningf("Error priming cache: %s", err.Error())
 		} else {
@@ -142,7 +141,7 @@ func (bc *Context) Build() error {
 		}
 	}()
 	var err error
-	bc.buildID, err = executeBuild(bc.writer, bc.dockerClient, bc.buildpackDir,
+	bc.buildID, err = executeBuild(bc.writer, bc.containerClient, bc.buildpackDir,
 		bc.args.DockerfilePath, bc.args.FullRepoName(), bc.cacheTag)
 	return err
 }
@@ -154,7 +153,7 @@ func (bc *Context) Push() (*rpc.BuildMetadata, error) {
 		return nil, err
 	}
 
-	imageID, digests, err := pushBuiltImage(bc.writer, bc.dockerClient, bc.args, bc.buildID)
+	imageID, digests, err := pushBuiltImage(bc.writer, bc.containerClient, bc.args, bc.buildID)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +187,7 @@ func retryDockerRequest(w containerclient.LogWriter, requestFunc func() error) (
 	return nil
 }
 
-func primeCache(w containerclient.LogWriter, dockerClient containerclient.Client, args *rpc.BuildArgs, cachedTag string) error {
+func primeCache(w containerclient.LogWriter, containerClient containerclient.Client, args *rpc.BuildArgs, cachedTag string) error {
 	if cachedTag == "" {
 		// There's nothing to do!
 		return nil
@@ -198,15 +197,14 @@ func primeCache(w containerclient.LogWriter, dockerClient containerclient.Client
 
 	// Attempt to pull the existing tag (if any) three times.
 	err := retryDockerRequest(w, func() error {
-		return dockerClient.PullImage(
-			dockerclient.PullImageOptions{
+		return containerClient.PullImage(
+			containerclient.PullImageOptions{
 				Repository:    args.FullRepoName(),
 				Registry:      args.Registry,
 				Tag:           cachedTag,
 				OutputStream:  w,
-				RawJSONStream: true,
 			},
-			dockerclient.AuthConfiguration{
+			containerclient.AuthConfiguration{
 				Username: "$token",
 				Password: args.PullToken,
 			},
@@ -219,26 +217,25 @@ func primeCache(w containerclient.LogWriter, dockerClient containerclient.Client
 	return nil
 }
 
-func pullBaseImage(w containerclient.LogWriter, dockerClient containerclient.Client, df *dockerfile.Metadata, args *rpc.BuildArgs) error {
+func pullBaseImage(w containerclient.LogWriter, containerClient containerclient.Client, df *dockerfile.Metadata, args *rpc.BuildArgs) error {
 	// Skip pulling the base image if it's "scratch" which is a built-in image
 	// that throws an error after executing `docker pull`.
 	if df.BaseImage == scratchImageName {
 		return nil
 	}
 
-	pullOptions := dockerclient.PullImageOptions{
+	pullOptions := containerclient.PullImageOptions{
 		Registry:      args.Registry,
 		Repository:    df.BaseImage,
 		Tag:           df.BaseImageTag,
 		OutputStream:  w,
-		RawJSONStream: true,
 	}
 
 	// Only pull the base image with auth when it is in our own registry.
-	var pullAuth dockerclient.AuthConfiguration
+	var pullAuth containerclient.AuthConfiguration
 	var usesAuth bool
 	if args.BaseImage.Username != "" && strings.Index(df.BaseImage, args.Registry) == 0 {
-		pullAuth = dockerclient.AuthConfiguration{
+		pullAuth = containerclient.AuthConfiguration{
 			Username: args.BaseImage.Username,
 			Password: args.BaseImage.Password,
 		}
@@ -249,7 +246,7 @@ func pullBaseImage(w containerclient.LogWriter, dockerClient containerclient.Cli
 
 	// Attempt to pull an image three times.
 	err := retryDockerRequest(w, func() error {
-		return dockerClient.PullImage(pullOptions, pullAuth)
+		return containerClient.PullImage(pullOptions, pullAuth)
 	})
 	if err != nil {
 		return rpc.PullError{Err: err.Error()}
@@ -258,14 +255,14 @@ func pullBaseImage(w containerclient.LogWriter, dockerClient containerclient.Cli
 	return nil
 }
 
-func findCachedTag(w containerclient.LogWriter, client rpc.Client, dockerClient containerclient.Client, df *dockerfile.Metadata) (string, error) {
+func findCachedTag(w containerclient.LogWriter, client rpc.Client, containerClient containerclient.Client, df *dockerfile.Metadata) (string, error) {
 	log.Infof("querying Docker for the ID of the pulled base image: %s:%s", df.BaseImage, df.BaseImageTag)
 	var baseImageID string
 	if df.BaseImage == scratchImageName {
 		// scratch is a builtin image that must be manually assigned its proper ID.
 		baseImageID = scratchImageID
 	} else {
-		baseImage, err := dockerClient.InspectImage(df.BaseImage + ":" + df.BaseImageTag)
+		baseImage, err := containerClient.InspectImage(df.BaseImage + ":" + df.BaseImageTag)
 		if err != nil {
 			// TODO(jzelinskie): maybe make this non-fatal
 			return "", err
@@ -287,19 +284,19 @@ func findCachedTag(w containerclient.LogWriter, client rpc.Client, dockerClient 
 	})
 }
 
-func pushBuiltImage(w containerclient.LogWriter, dockerClient containerclient.Client, args *rpc.BuildArgs, imageID string) (string, []string, error) {
+func pushBuiltImage(w containerclient.LogWriter, containerClient containerclient.Client, args *rpc.BuildArgs, imageID string) (string, []string, error) {
 	// Push each new tag for the image.
 	for _, tagName := range args.TagNames {
 		// Setup tag options.
-		tagOptions := dockerclient.TagImageOptions{
-			Repo:  args.FullRepoName(),
+		tagOptions := containerclient.TagImageOptions{
+			Repository:  args.FullRepoName(),
 			Tag:   tagName,
 			Force: true,
 		}
 
 		// Tag the image.
 		log.Infof("tagging image %s as %s:%s", imageID, args.FullRepoName(), tagName)
-		err := dockerClient.TagImage(imageID, tagOptions)
+		err := containerClient.TagImage(imageID, tagOptions)
 		if err != nil {
 			return "", nil, rpc.TagError{Err: err.Error()}
 		}
@@ -311,15 +308,14 @@ func pushBuiltImage(w containerclient.LogWriter, dockerClient containerclient.Cl
 		fullyQualifiedName := args.FullRepoName() + ":" + tagName
 		log.Infof("pushing image %s (%s)", fullyQualifiedName, imageID)
 		err = retryDockerRequest(w, func() error {
-			return dockerClient.PushImage(
-				dockerclient.PushImageOptions{
-					Name:          args.FullRepoName(),
+			return containerClient.PushImage(
+				containerclient.PushImageOptions{
+					Repository:          args.FullRepoName(),
 					Registry:      args.Registry,
 					Tag:           tagName,
 					OutputStream:  w,
-					RawJSONStream: true,
 				},
-				dockerclient.AuthConfiguration{
+				containerclient.AuthConfiguration{
 					Username: "$token",
 					Password: args.PushToken,
 				},
@@ -333,7 +329,7 @@ func pushBuiltImage(w containerclient.LogWriter, dockerClient containerclient.Cl
 	}
 
 	// Find the image built.
-	dockerImage, err := dockerClient.InspectImage(imageID)
+	dockerImage, err := containerClient.InspectImage(imageID)
 	if err != nil {
 		return "", nil, rpc.TagError{Err: err.Error()}
 	}
@@ -350,7 +346,7 @@ func (bc *Context) Cleanup(builtImageID string) error {
 	// Remove the cached image (if any).
 	if bc.cacheTag != "" {
 		cacheImage := fmt.Sprintf("%s:%s", bc.args.Repository, bc.cacheTag)
-		err := bc.dockerClient.RemoveImageExtended(cacheImage, dockerclient.RemoveImageOptions{
+		err := bc.containerClient.RemoveImageExtended(cacheImage, containerclient.RemoveImageOptions{
 			Force: true,
 		})
 		if err != nil {
@@ -363,7 +359,7 @@ func (bc *Context) Cleanup(builtImageID string) error {
 	if bc.metadata.BaseImageTag != "" {
 		baseImage = fmt.Sprintf("%s:%s", baseImage, bc.metadata.BaseImageTag)
 	}
-	err := bc.dockerClient.RemoveImageExtended(baseImage, dockerclient.RemoveImageOptions{
+	err := bc.containerClient.RemoveImageExtended(baseImage, containerclient.RemoveImageOptions{
 		Force: true,
 	})
 	if err != nil {
@@ -371,7 +367,7 @@ func (bc *Context) Cleanup(builtImageID string) error {
 	}
 
 	// Remove the built image.
-	brerr := bc.dockerClient.RemoveImageExtended(builtImageID, dockerclient.RemoveImageOptions{
+	brerr := bc.containerClient.RemoveImageExtended(builtImageID, containerclient.RemoveImageOptions{
 		Force: true,
 	})
 	if brerr != nil {
@@ -379,7 +375,7 @@ func (bc *Context) Cleanup(builtImageID string) error {
 	}
 
 	// Prune any other images.
-	_, perr := bc.dockerClient.PruneImages(dockerclient.PruneImagesOptions{})
+	_, perr := bc.containerClient.PruneImages(containerclient.PruneImagesOptions{})
 	if perr != nil {
 		log.Warningf("Could not prune images: %v", perr)
 	}
@@ -387,7 +383,7 @@ func (bc *Context) Cleanup(builtImageID string) error {
 	return nil
 }
 
-func executeBuild(w containerclient.LogWriter, dockerClient containerclient.Client, buildPackageDirectory string, dockerFileName string, repo string, cacheTag string) (string, error) {
+func executeBuild(w containerclient.LogWriter, containerClient containerclient.Client, buildPackageDirectory string, dockerFileName string, repo string, cacheTag string) (string, error) {
 	buildUUID, err := uuid.NewV4()
 	if err != nil {
 		return "", err
@@ -403,7 +399,7 @@ func executeBuild(w containerclient.LogWriter, dockerClient containerclient.Clie
 		log.Infof("using cache image %s", cachedImage)
 	}
 
-	err = dockerClient.BuildImage(dockerclient.BuildImageOptions{
+	err = containerClient.BuildImage(containerclient.BuildImageOptions{
 		Name:                buildID,
 		NoCache:             false,
 		CacheFrom:           cacheFrom,
@@ -411,7 +407,6 @@ func executeBuild(w containerclient.LogWriter, dockerClient containerclient.Clie
 		RmTmpContainer:      true,
 		ForceRmTmpContainer: true,
 		OutputStream:        w,
-		RawJSONStream:       true,
 		Dockerfile:          dockerFileName, // Required for .dockerignore to work
 		ContextDir:          buildPackageDirectory,
 	})

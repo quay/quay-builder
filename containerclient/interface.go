@@ -76,7 +76,7 @@ type Client interface {
 
 func NewClient(host, runtime string) (Client, error) {
 	runtime = strings.ToLower(runtime)
-	if runtime != "docker" || runtime != "podman" {
+	if runtime != "docker" && runtime != "podman" {
 		return nil, fmt.Errorf("Invalid container runtime: %s", runtime)
 	}
 

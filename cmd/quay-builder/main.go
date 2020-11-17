@@ -21,6 +21,7 @@ const (
 
 func main() {
 	// Grab the environment.
+	containerRuntime := os.Getenv("CONTAINER_RUNTIME")
 	dockerHost := os.Getenv("DOCKER_HOST")
 	token := os.Getenv("TOKEN")
 	endpoint := os.Getenv("ENDPOINT")
@@ -86,7 +87,7 @@ func main() {
 
 	// Start build
 	log.Infof("starting build")
-	_, err = build(dockerHost, rpcClient, buildargs)
+	_, err = build(dockerHost, containerRuntime, rpcClient, buildargs)
 	if err != nil {
 		log.Fatalf("failed to build buildpack: %s", err)
 	}
@@ -94,9 +95,9 @@ func main() {
 	log.Infof("done")
 }
 
-func build(dockerHost string, client rpc.Client, args *rpc.BuildArgs) (*rpc.BuildMetadata, error) {
+func build(dockerHost, containerRuntime string, client rpc.Client, args *rpc.BuildArgs) (*rpc.BuildMetadata, error) {
 	var buildCtx *buildctx.Context
-	buildCtx, err := buildctx.New(client, args, dockerHost)
+	buildCtx, err := buildctx.New(client, args, dockerHost, containerRuntime)
 	if err != nil {
 		return nil, err
 	}
