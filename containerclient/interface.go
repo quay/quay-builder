@@ -1,9 +1,12 @@
 package containerclient
 
 import (
-	"fmt"
 	"io"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
+
+	"github.com/quay/quay-builder/rpc"
 )
 
 type BuildImageOptions struct {
@@ -74,15 +77,65 @@ type Client interface {
 	PruneImages(PruneImagesOptions) (*PruneImagesResults, error)
 }
 
-func NewClient(host, runtime string) (Client, error) {
-	runtime = strings.ToLower(runtime)
-	if runtime != "docker" && runtime != "podman" {
-		return nil, fmt.Errorf("Invalid container runtime: %s", runtime)
+func NewClient(host, containerRuntime string) (Client, error) {
+	containerRuntime = strings.ToLower(containerRuntime)
+	if containerRuntime != "docker" && containerRuntime != "podman" {
+		log.Fatal("Invalid container runtime:", containerRuntime)
 	}
 
-	if runtime == "docker" {
+	if containerRuntime == "docker" {
 		return NewDockerClient(host)
 	} else {
 		return NewPodmanClient(host)
 	}
+}
+
+// LogWriter represents anything that can stream Docker logs from the daemon
+// and check if any error has occured.
+type LogWriter interface {
+	// ErrResponse returns an error that occurred from Docker and resets the
+	// state of that internal error value to nil. If there is no error, returns
+	// false as part of the tuple.
+	ErrResponse() (error, bool)
+
+	// ResetError throws away any error state from previously streamed logs.
+	ResetError()
+
+	io.Writer
+}
+
+// NewRPCWriter allocates a new Writer that streams logs via an RPC client.
+func NewRPCWriter(client rpc.Client, containerRuntime string) LogWriter {
+	containerRuntime = strings.ToLower(containerRuntime)
+	if containerRuntime != "docker" && containerRuntime != "podman" {
+		log.Fatal("Invalid container runtime:", containerRuntime)
+	}
+
+	if containerRuntime == "docker" {
+		return &DockerRPCWriter{
+			client:        client,
+			partialBuffer: new(partialBuffer),
+		}
+	} else {
+		return &PodmanRPCWriter{
+			client:        client,
+			partialBuffer: new(partialBuffer),
+		}
+	}
+
+}
+
+// Response represents a response from a Docker™ daemon or podman.
+type Response struct {
+	Error          string         `json:"error,omitempty"`
+	Stream         string         `json:"stream,omitempty"`
+	Status         string         `json:"status,omitempty"`
+	ID             string         `json:"id,omitempty"`
+	ProgressDetail progressDetail `json:"progressDetail,omitempty"`
+}
+
+// progressDetail represents the progress made by a Docker™ command.
+type progressDetail struct {
+	Current int `json:"current,omitempty"`
+	Total   int `json:"total,omitempty"`
 }

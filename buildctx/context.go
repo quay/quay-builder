@@ -25,14 +25,14 @@ const (
 
 // Context represents the internal state of a build.
 type Context struct {
-	client       rpc.Client
-	writer       containerclient.LogWriter
+	client          rpc.Client
+	writer          containerclient.LogWriter
 	containerClient containerclient.Client
-	args         *rpc.BuildArgs
-	metadata     *dockerfile.Metadata
-	buildpackDir string
-	buildID      string
-	cacheTag     string
+	args            *rpc.BuildArgs
+	metadata        *dockerfile.Metadata
+	buildpackDir    string
+	buildID         string
+	cacheTag        string
 }
 
 // New connects to the docker daemon and sets up the initial state of a build
@@ -49,10 +49,10 @@ func New(client rpc.Client, args *rpc.BuildArgs, dockerHost, containerRuntime st
 	log.Infof("connected to docker host: %s", dockerHost)
 
 	return &Context{
-		client:       client,
-		writer:       containerclient.NewRPCWriter(client),
+		client:          client,
+		writer:          containerclient.NewRPCWriter(client, containerRuntime),
 		containerClient: containerClient,
-		args:         args,
+		args:            args,
 	}, nil
 }
 
@@ -199,10 +199,10 @@ func primeCache(w containerclient.LogWriter, containerClient containerclient.Cli
 	err := retryDockerRequest(w, func() error {
 		return containerClient.PullImage(
 			containerclient.PullImageOptions{
-				Repository:    args.FullRepoName(),
-				Registry:      args.Registry,
-				Tag:           cachedTag,
-				OutputStream:  w,
+				Repository:   args.FullRepoName(),
+				Registry:     args.Registry,
+				Tag:          cachedTag,
+				OutputStream: w,
 			},
 			containerclient.AuthConfiguration{
 				Username: "$token",
@@ -225,10 +225,10 @@ func pullBaseImage(w containerclient.LogWriter, containerClient containerclient.
 	}
 
 	pullOptions := containerclient.PullImageOptions{
-		Registry:      args.Registry,
-		Repository:    df.BaseImage,
-		Tag:           df.BaseImageTag,
-		OutputStream:  w,
+		Registry:     args.Registry,
+		Repository:   df.BaseImage,
+		Tag:          df.BaseImageTag,
+		OutputStream: w,
 	}
 
 	// Only pull the base image with auth when it is in our own registry.
@@ -289,9 +289,9 @@ func pushBuiltImage(w containerclient.LogWriter, containerClient containerclient
 	for _, tagName := range args.TagNames {
 		// Setup tag options.
 		tagOptions := containerclient.TagImageOptions{
-			Repository:  args.FullRepoName(),
-			Tag:   tagName,
-			Force: true,
+			Repository: args.FullRepoName(),
+			Tag:        tagName,
+			Force:      true,
 		}
 
 		// Tag the image.
@@ -310,10 +310,10 @@ func pushBuiltImage(w containerclient.LogWriter, containerClient containerclient
 		err = retryDockerRequest(w, func() error {
 			return containerClient.PushImage(
 				containerclient.PushImageOptions{
-					Repository:          args.FullRepoName(),
-					Registry:      args.Registry,
-					Tag:           tagName,
-					OutputStream:  w,
+					Repository:   args.FullRepoName(),
+					Registry:     args.Registry,
+					Tag:          tagName,
+					OutputStream: w,
 				},
 				containerclient.AuthConfiguration{
 					Username: "$token",
