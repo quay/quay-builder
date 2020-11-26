@@ -8,8 +8,8 @@ replace github.com/containerd/containerd => github.com/containerd/containerd v1.
 //https://github.com/moby/moby/issues/40185
 replace github.com/docker/docker => github.com/docker/docker v1.4.2-0.20200227233006-38f52c9fec82
 
-// https://github.com/ory/dockertest/issues/208
-replace golang.org/x/sys => golang.org/x/sys v0.0.0-20200826173525-f9321e4c35a6
+// Workaround for darwin: https://github.com/ory/dockertest/issues/208
+// replace golang.org/x/sys => golang.org/x/sys v0.0.0-20200826173525-f9321e4c35a6
 
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20200131002800-4ca7245c29b1 // indirect

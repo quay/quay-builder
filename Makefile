@@ -1,4 +1,4 @@
-.PHONY: dep test bin/quay-builder
+.PHONY: vendor test bin/quay-builder
 
 PROJECT   ?= quay-builder
 ORG_PATH  ?= github.com/quay
@@ -8,31 +8,28 @@ VERSION   ?= $(shell ./scripts/git-version)
 LD_FLAGS  ?= "-w -X $(REPO_PATH)/version.Version=$(VERSION)"
 IMAGE_TAG ?= latest
 SUBSCRIPTION_KEY ?= subscription.pem
+BUILD_TAGS ?= 'btrfs_noversion exclude_graphdriver_btrfs exclude_graphdriver_devicemapper containers_image_openpgp'
+BUILDER_SRC ?= 'github.com/quay/quay-builder'
 
-all: dep test build
+all: vendor test build
 
-dep:
-	@GO111MODULE=on go mod vendor
+vendor:
+	@go mod vendor
 
-test: dep
+test: vendor
 	@go vet ./...
 	@go test -v ./...
 
-build: dep bin/quay-builder
+build: bin/quay-builder
 
 bin/quay-builder:
-	@go build -ldflags $(LD_FLAGS) -o bin/quay-builder \
-	  $(REPO_PATH)/cmd/quay-builder
+	CGO_ENABLED=0 go build -ldflags $(LD_FLAGS) -o bin/quay-builder -tags $(BUILD_TAGS) $(REPO_PATH)/cmd/quay-builder
 
 install:
-	@go install -ldflags $(LD_FLAGS) $(REPO_PATH)/cmd/quay-builder
+	go install -ldflags $(LD_FLAGS) $(REPO_PATH)/cmd/quay-builder
 
-build-centos7:
-	docker build -f Dockerfile.centos7 -t $(IMAGE):$(IMAGE_TAG)-centos7 .
-
-build-rhel7:
-	docker build -f Dockerfile.rhel7 -t $(IMAGE):$(IMAGE_TAG)-rhel7 . \
-		--build-arg SUBSCRIPTION_KEY=$(SUBSCRIPTION_KEY)
+build-centos:
+	docker build --build-arg=BUILDER_SRC=$(BUILDER_SRC) -f Dockerfile.centos -t $(IMAGE):$(IMAGE_TAG)-centos .
 
 build-alpine:
-	docker build -f Dockerfile.alpine -t $(IMAGE):$(IMAGE_TAG)-alpine .
+	docker build --build-arg=BUILDER_SRC=$(BUILDER_SRC) -f Dockerfile.alpine -t $(IMAGE):$(IMAGE_TAG)-alpine .
