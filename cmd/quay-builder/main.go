@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"os"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -21,18 +23,21 @@ const (
 
 func main() {
 	// Grab the environment.
+	containerRuntime := os.Getenv("CONTAINER_RUNTIME")
 	dockerHost := os.Getenv("DOCKER_HOST")
 	token := os.Getenv("TOKEN")
-	endpoint := os.Getenv("ENDPOINT")
 	server := os.Getenv("SERVER")
 	certFile := os.Getenv("TLS_CERT_PATH")
+	insecure := os.Getenv("INSECURE")
 
 	log.Infof("starting quay-builder: %s", version.Version)
 
-	if endpoint == "" && server == "" {
-		log.Fatal("missing or empty ENDPOINT and SERVER env vars: one is required")
-	} else if endpoint == "" {
-		endpoint = server + "/b1/buildmanager"
+	if server == "" {
+		log.Fatal("missing or empty SERVER env vars: required format <host>:<port>")
+	}
+
+	if containerRuntime == "" {
+		containerRuntime = "docker"
 	}
 
 	if dockerHost == "" {
@@ -49,14 +54,18 @@ func main() {
 			log.Fatalf("invalid TLS config: %s", err)
 		}
 		opts = append(opts, grpc.WithTransportCredentials(tlsCfg))
-	} else {
+	} else if strings.ToLower(insecure) == "true" {
 		opts = append(opts, grpc.WithInsecure())
+	} else {
+		// Load the default system certs
+		tlsCfg := credentials.NewTLS(&tls.Config{})
+		opts = append(opts, grpc.WithTransportCredentials(tlsCfg))
 	}
 
 	// Attempt to connect to gRPC server (blocking)
-	log.Infof("connecting to gRPC server...: %s", endpoint)
+	log.Infof("connecting to gRPC server...: %s", server)
 	opts = append(opts, grpc.WithBlock(), grpc.WithTimeout(connectTimeout))
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.Dial(server, opts...)
 	if err != nil {
 		log.Fatalf("failed to dial grpc server: %v", err)
 	}
@@ -86,7 +95,7 @@ func main() {
 
 	// Start build
 	log.Infof("starting build")
-	_, err = build(dockerHost, rpcClient, buildargs)
+	_, err = build(dockerHost, containerRuntime, rpcClient, buildargs)
 	if err != nil {
 		log.Fatalf("failed to build buildpack: %s", err)
 	}
@@ -94,9 +103,9 @@ func main() {
 	log.Infof("done")
 }
 
-func build(dockerHost string, client rpc.Client, args *rpc.BuildArgs) (*rpc.BuildMetadata, error) {
+func build(dockerHost, containerRuntime string, client rpc.Client, args *rpc.BuildArgs) (*rpc.BuildMetadata, error) {
 	var buildCtx *buildctx.Context
-	buildCtx, err := buildctx.New(client, args, dockerHost)
+	buildCtx, err := buildctx.New(client, args, dockerHost, containerRuntime)
 	if err != nil {
 		return nil, err
 	}

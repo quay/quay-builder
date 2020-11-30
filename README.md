@@ -5,11 +5,9 @@ This repository is for an automated build worker for a Quay.
 ## Architecture
 
 There is a client/server relationship between builder and the management server.
-Clients connect using a standard websocket RPC/pubsub subprotocol called [WAMP](http://wamp.ws).
-There are two modes in which builders can operate: enterprise and hosted.
-Enterprise builders are designed to be long-running processes on the given machine that will be trusted forever.
-In this mode a builder connect to a Build Manager and indefinitely loop completing available work.
-Hosted builders are designed to be dynamically created and connect to the management server for a single build and then disappear.
+Builders are created and connect to the build manager using the GRPC protocol.
+Builders are designed to be dynamically created and connect to the management server for a single build and then disappear,
+generally on some control plane such as K8s or AWS.
 
 ## Building the builder
 
@@ -20,21 +18,23 @@ make build
 
 ## Running the builder
 
-### Enterprise
+### Environment variables
 
-Only an endpoint is required as all other parameters for building are acquired from a Build Manager on a per build basis.
+The builders are bootstrapped and configured using environment variables. These are set when created by the build manager.
+The parameters necessary for the actual build are obtained in a subsequent call to the build manager's API
 
-```sh
-ENDPOINT="ws://localhost:8787" ./quay-builder
-```
+`CONTAINER_RUNTIME`: "podman" or "docker"
+`DOCKER_HOST`: The container runtime socket. Defaults to "unix:///var/run/docker.sock"
+`TOKEN`: The registration token needed to get the build args from the build manager
+`SERVER`: The build manager's GRPC endpoint. Format: <host>:<port>
+`TLS_CERT_PATH`: TLS cert file path (optional)
+`INSECURE`: "true" or "false". Of "true" attempt to connect to the build manager without tls.
 
-### Hosted
+### Container runtimes
 
-A token and realm must be provided at launch in order to identify a particular build or else it will be rejected by a Build Manager.
-
-```sh
-TOKEN="sometoken" ENDPOINT="ws://localhost:8787" REALM="builder-realm" ./quay-builder
-```
+The builder supports Docker and Podman/Buildah to run the builds. The runtime is specified using the `CONTAINER_RUNTIME` and `DOCKER_HOST`.
+If these ENV variables are not set, `CONTAINER_RUNTIME` and `DOCKER_HOST` will be set to "docker" and "unix:///var/run/docker.sock", respectively.
+If `CONTAINER_RUNTIME` is set to "podman", it is expected that `DOCKER_HOST` is set to podman's equivalent to the docker's docker. e.g unix:///var/run/podman.sock
 
 ## Building the builder image
 
@@ -48,33 +48,16 @@ and the built image will be tagged with
 ```
 <IMAGE>:<IMAGE_TAG>-<base image name>
 ```
-where the `<base image name>` can be either `alpine` or `rhel7`.
+where the `<base image name>` can be either `alpine` or `centos`.
 
 ### Building Alpine based image:
 ```sh
-make build-alpine-image
+make build-alpine
 ```
-This generates image with tag `quay.io/quay/quay-builder:latest-alpine`.
+This generates image with tag `quay.io/projectquay/quay-builder:latest-alpine`.
 
-### Building RHEL based image 
-It requires certificate key and requires enabling `--squash` experimental feature
+### Building CentOS based image:
 ```sh
-make build-rhel7-image SUBSCRIPTION_KEY=<path to your key file (PEM)>
+make build-centos
 ```
-This generates image with tag `quay.io/quay/quay-builder:latest-rhel7`.
-
-## Running the builder image
-
-Running alpine based image or rhel based image requires the same parameters but different image.
-
-**Please Notice** that quay builder uses the host machine's docker.sock to pull/push/build images and therefore, the docker machine must be able to reach the Quay host. You can debug by pushing a image to quay instance.
-
-### Pointing to Quay without TLS
-```
-docker run --restart on-failure -e SERVER=ws://myquayserver:8787 -v /var/run/docker.sock:/var/run/docker.sock quay.io/quay/quay-builder:latest-alpine
-```
-
-### Pointing to Quay with TLS
-```
-docker run --restart on-failure -e SERVER=wss://myquayserver:8787 -v /var/run/docker.sock:/var/run/docker.sock -v /path/to/customCA/rootCA.pem:/certs/rootCA.pem quay.io/quay/quay-builder:latest-alpine
-```
+This generates image with tag `quay.io/projectquay/quay-builder:latest-centos`.

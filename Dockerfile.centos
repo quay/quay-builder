@@ -1,35 +1,35 @@
-FROM centos:7 AS build
-LABEL maintainer "Sida Chen <sidchen@redhat.com>"
+FROM centos:8 AS build
+LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
-# Install Golang by retrieving the binary
-ENV GO_VERSION=1.12.1
+ARG BUILDER_SRC
+
+ENV GO_VERSION=1.15.2
 ENV GO_OS=linux
 ENV GO_ARCH=amd64
-ENV GO_HASH=2a3fdabf665496a0db5f41ec6af7a9b15a49fbe71a85a50ca38b1f13a103aeec
-RUN curl https://dl.google.com/go/go${GO_VERSION}.${GO_OS}-${GO_ARCH}.tar.gz --output go.tar.gz
-RUN echo ${GO_HASH} go.tar.gz > GOCHECKSUM
-RUN sha256sum -c GOCHECKSUM
-RUN tar -C /usr/local -xzf go.tar.gz > /dev/null
 ENV GOPATH=/go
+
+RUN curl https://dl.google.com/go/go${GO_VERSION}.${GO_OS}-${GO_ARCH}.tar.gz --output go.tar.gz
+RUN tar -C /usr/local -xzf go.tar.gz > /dev/null
 ENV PATH=$PATH:/usr/local/go/bin:${GOPATH}/bin
 
-# Verify go verion
 RUN go version
 
-ARG BUILDER_SRC=github.com/quay/quay-builder
-
-# Install dependencies
 RUN yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git perl wget make gcc
+RUN dnf --enablerepo=PowerTools install -y gpgme-devel
 
 COPY . /go/src/${BUILDER_SRC}
-RUN cd /go/src/${BUILDER_SRC} && make && make install
+RUN cd /go/src/${BUILDER_SRC} && make build
 
-FROM centos:7
-LABEL maintainer "thomasmckay@redhat.com"
+
+FROM centos:8
+LABEL maintainer "Quay devel<quay-devel@redhat.com>"
+
+ARG BUILDER_SRC
 
 RUN yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git perl
+RUN dnf --enablerepo=PowerTools install -y gpgme-devel
 
-COPY --from=build /go/bin/quay-builder /usr/local/bin
+COPY --from=build /go/src/${BUILDER_SRC}/bin/quay-builder /usr/local/bin
 
 COPY buildpack/ssh-git.sh /
 ADD load_extra_ca.rhel.sh /load_extra_ca.sh
@@ -39,4 +39,3 @@ VOLUME ["/tmp"]
 VOLUME [ "/certs" ]
 
 ENTRYPOINT ["sh", "/entrypoint.sh"]
-

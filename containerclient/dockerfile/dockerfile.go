@@ -10,9 +10,9 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/docker/distribution/reference"
+	"github.com/moby/buildkit/frontend/dockerfile/instructions"
 	"github.com/moby/buildkit/frontend/dockerfile/parser"
 	"github.com/moby/buildkit/frontend/dockerfile/shell"
-	"github.com/moby/buildkit/frontend/dockerfile/instructions"
 
 	"github.com/quay/quay-builder/rpc"
 )

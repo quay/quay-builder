@@ -1,4 +1,4 @@
-package docker
+package containerclient
 
 import (
 	"bytes"
@@ -19,20 +19,6 @@ const (
 	pushingStatus    = "Pushing"
 )
 
-// LogWriter represents anything that can stream Docker logs from the daemon
-// and check if any error has occured.
-type LogWriter interface {
-	// ErrResponse returns an error that occurred from Docker and resets the
-	// state of that internal error value to nil. If there is no error, returns
-	// false as part of the tuple.
-	ErrResponse() (error, bool)
-
-	// ResetError throws away any error state from previously streamed logs.
-	ResetError()
-
-	io.Writer
-}
-
 // partialBuffer represents a buffer of data that was unable to be previously
 // serialized because it was not enough data was provided to form valid JSON.
 type partialBuffer []byte
@@ -49,25 +35,17 @@ func (pb *partialBuffer) getAndEmpty(in []byte) (ret []byte) {
 	return
 }
 
-// RPCWriter implements a Writer that consumes encoded JSON data and buffers it
+// DockerRPCWriter implements a RPCWriter that consumes encoded JSON data and buffers it
 // until it has a valid JSON object and then logs it to an rpc.Client.
-type RPCWriter struct {
+type DockerRPCWriter struct {
 	client           rpc.Client
 	errResponse      *Response
 	partialBuffer    *partialBuffer
 	hasPartialBuffer bool
 }
 
-// NewRPCWriter allocates a new Writer that streams logs via an RPC client.
-func NewRPCWriter(client rpc.Client) LogWriter {
-	return &RPCWriter{
-		client:        client,
-		partialBuffer: new(partialBuffer),
-	}
-}
-
 // Write implements the io.Writer interface for RPCWriter.
-func (w *RPCWriter) Write(p []byte) (n int, err error) {
+func (w *DockerRPCWriter) Write(p []byte) (n int, err error) {
 	originalLength := len(p)
 
 	// Note: Sometimes Docker returns to us only the beginning of a stream,
@@ -135,7 +113,7 @@ func (w *RPCWriter) Write(p []byte) (n int, err error) {
 
 // ErrResponse returns an error that occurred from Docker and then calls
 // ResetError().
-func (w *RPCWriter) ErrResponse() (error, bool) {
+func (w *DockerRPCWriter) ErrResponse() (error, bool) {
 	err := w.errResponse
 	w.ResetError()
 
@@ -147,23 +125,8 @@ func (w *RPCWriter) ErrResponse() (error, bool) {
 }
 
 // ResetError throws away any error state from previously streamed logs.
-func (w *RPCWriter) ResetError() {
+func (w *DockerRPCWriter) ResetError() {
 	w.errResponse = nil
-}
-
-// Response represents a response from a Docker™ daemon.
-type Response struct {
-	Error          string         `json:"error,omitempty"`
-	Stream         string         `json:"stream,omitempty"`
-	Status         string         `json:"status,omitempty"`
-	ID             string         `json:"id,omitempty"`
-	ProgressDetail progressDetail `json:"progressDetail,omitempty"`
-}
-
-// progressDetail represents the progress made by a Docker™ command.
-type progressDetail struct {
-	Current int `json:"current,omitempty"`
-	Total   int `json:"total,omitempty"`
 }
 
 type filter struct {
