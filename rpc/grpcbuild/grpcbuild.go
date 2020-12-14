@@ -121,14 +121,17 @@ func (c *grpcClient) SetPhase(phase rpc.Phase, pmd *rpc.PullMetadata) error {
 		},
 	)
 	if err != nil {
+		log.Errorf("failed to update phase: %v", err)
 		return err
 	}
 
 	if !phaseResponse.Success {
+		log.Errorf("build manager rejected phase transition: %v", err)
 		return rpc.ErrClientRejectedPhaseTransition{}
 	}
 
-	if !(int(phaseResponse.SequenceNumber) != c.phaseSequenceNum) {
+	if int(phaseResponse.SequenceNumber) != c.phaseSequenceNum {
+		log.Errorf("build manager rejected phase transition (sequence out of order: %d vs %d)", phaseResponse.SequenceNumber, c.phaseSequenceNum)
 		return rpc.ErrClientRejectedPhaseTransition{}
 	}
 
@@ -246,7 +249,9 @@ func phaseEnum(phase rpc.Phase) pb.Phase {
 		return pb.Phase_WAITING
 	case rpc.Unpacking:
 		return pb.Phase_UNPACKING
-	case rpc.Pulling:
+	// TODO: Should CheckingCache and PrimingCache have separate phases.
+	//       If so, the proto definition would need to be updated with the new phases.
+	case rpc.Pulling, rpc.CheckingCache, rpc.PrimingCache:
 		return pb.Phase_PULLING
 	case rpc.Building:
 		return pb.Phase_BUILDING

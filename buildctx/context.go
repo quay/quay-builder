@@ -59,12 +59,14 @@ func New(client rpc.Client, args *rpc.BuildArgs, dockerHost, containerRuntime st
 // Unpack downloads and expands the buildpack and parses the Dockerfile.
 func (bc *Context) Unpack() error {
 	if err := bc.client.SetPhase(rpc.Unpacking, nil); err != nil {
+		log.Errorf("failed to update phase to `unpacking`")
 		return err
 	}
 
 	// Download and expand the buildpack.
 	buildpackDir, err := buildpack.Download(bc.args)
 	if err != nil {
+		log.Errorf("failed to download buildpack: %v", err)
 		return err
 	}
 	bc.buildpackDir = buildpackDir
@@ -73,6 +75,7 @@ func (bc *Context) Unpack() error {
 	metadata, err := dockerfile.NewMetadataFromDir(buildpackDir, bc.args.DockerfilePath)
 
 	if err != nil {
+		log.Errorf("failed to parse dockerfile: %v", err)
 		return err
 	}
 	bc.metadata = metadata
@@ -88,6 +91,7 @@ func (bc *Context) Pull() error {
 		BaseImageTag: bc.metadata.BaseImageTag,
 		PullUsername: bc.args.BaseImage.Username,
 	}); err != nil {
+		log.Errorf("failed to update phase to `pulling`")
 		return err
 	}
 
@@ -98,6 +102,7 @@ func (bc *Context) Pull() error {
 // caching and then "docker pull"s it.
 func (bc *Context) Cache() error {
 	if err := bc.client.SetPhase(rpc.CheckingCache, nil); err != nil {
+		log.Errorf("failed to update phase to `checking-cache`")
 		return err
 	}
 
@@ -112,6 +117,7 @@ func (bc *Context) Cache() error {
 	// Conduct a pull of the existing tag (if any). This will prime the cache.
 	if bc.args.PullToken != "" && cachedTag != "" {
 		if err := bc.client.SetPhase(rpc.PrimingCache, nil); err != nil {
+			log.Errorf("failed to update phase to `priming-cache`")
 			return err
 		}
 
@@ -129,6 +135,7 @@ func (bc *Context) Cache() error {
 // Build performs a "docker build".
 func (bc *Context) Build() error {
 	if err := bc.client.SetPhase(rpc.Building, nil); err != nil {
+		log.Errorf("failed to update phase to `building`")
 		return err
 	}
 
@@ -150,11 +157,17 @@ func (bc *Context) Build() error {
 // failures occur.
 func (bc *Context) Push() (*rpc.BuildMetadata, error) {
 	if err := bc.client.SetPhase(rpc.Pushing, nil); err != nil {
+		log.Errorf("failed to update phase to `pushing`")
 		return nil, err
 	}
 
 	imageID, digests, err := pushBuiltImage(bc.writer, bc.containerClient, bc.args, bc.buildID)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := bc.client.SetPhase(rpc.Complete, nil); err != nil {
+		log.Errorf("failed to update phase to `complete`")
 		return nil, err
 	}
 

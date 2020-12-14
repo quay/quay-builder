@@ -49,7 +49,7 @@ func main() {
 
 	// Attempt to load the TLS config.
 	if len(certFile) > 0 {
-		tlsCfg, err := credentials.NewClientTLSFromFile(certFile, server)
+		tlsCfg, err := credentials.NewClientTLSFromFile(certFile, "")
 		if err != nil {
 			log.Fatalf("invalid TLS config: %s", err)
 		}
@@ -129,7 +129,7 @@ func build(dockerHost, containerRuntime string, client rpc.Client, args *rpc.Bui
 	}
 
 	// Kick off the build.
-	log.Infof("build: buliding")
+	log.Infof("build: building")
 	if err = buildCtx.Build(); err != nil {
 		return nil, err
 	}
