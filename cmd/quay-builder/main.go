@@ -95,7 +95,7 @@ func main() {
 
 	// Start build
 	log.Infof("starting build")
-	_, err = build(dockerHost, containerRuntime, rpcClient, buildargs)
+	_, err = build(dockerHost, containerRuntime, rpcClient, buildargs, hbCancel)
 	if err != nil {
 		log.Fatalf("failed to build buildpack: %s", err)
 	}
@@ -103,7 +103,7 @@ func main() {
 	log.Infof("done")
 }
 
-func build(dockerHost, containerRuntime string, client rpc.Client, args *rpc.BuildArgs) (*rpc.BuildMetadata, error) {
+func build(dockerHost, containerRuntime string, client rpc.Client, args *rpc.BuildArgs, hbCanceller context.CancelFunc) (*rpc.BuildMetadata, error) {
 	var buildCtx *buildctx.Context
 	buildCtx, err := buildctx.New(client, args, dockerHost, containerRuntime)
 	if err != nil {
@@ -138,6 +138,15 @@ func build(dockerHost, containerRuntime string, client rpc.Client, args *rpc.Bui
 	log.Infof("build: pushing")
 	bmd, err := buildCtx.Push()
 	if err != nil {
+		return nil, err
+	}
+
+	// Stop heartbeats
+	hbCanceller()
+
+	// Move build to completed phase
+	if err := client.SetPhase(rpc.Complete, nil); err != nil {
+		log.Errorf("failed to update phase to `complete`")
 		return nil, err
 	}
 
