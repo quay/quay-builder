@@ -166,11 +166,6 @@ func (bc *Context) Push() (*rpc.BuildMetadata, error) {
 		return nil, err
 	}
 
-	if err := bc.client.SetPhase(rpc.Complete, nil); err != nil {
-		log.Errorf("failed to update phase to `complete`")
-		return nil, err
-	}
-
 	return &rpc.BuildMetadata{ImageID: imageID, Digests: digests}, nil
 }
 
@@ -358,7 +353,7 @@ func pushBuiltImage(w containerclient.LogWriter, containerClient containerclient
 func (bc *Context) Cleanup(builtImageID string) error {
 	// Remove the cached image (if any).
 	if bc.cacheTag != "" {
-		cacheImage := fmt.Sprintf("%s:%s", bc.args.Repository, bc.cacheTag)
+		cacheImage := fmt.Sprintf("%s:%s", bc.args.FullRepoName(), bc.cacheTag)
 		err := bc.containerClient.RemoveImageExtended(cacheImage, containerclient.RemoveImageOptions{
 			Force: true,
 		})
