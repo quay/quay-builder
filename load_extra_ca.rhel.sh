@@ -9,5 +9,7 @@ fi
 
 update-ca-trust extract
 
-# Update the defaule bundle to link to the newly generated bundle (not sure why /etc/pki/ca-trust/extracted/pem is not being updated...)
-cat /certs/ssl.cert >> /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+# Update the default bundle to link to the newly generated bundle (not sure why /etc/pki/ca-trust/extracted/pem is not being updated...)
+if [ -f "/certs/ssl.cert" ]; then
+    cat /certs/ssl.cert >> /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+fi

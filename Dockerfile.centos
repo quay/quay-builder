@@ -1,4 +1,20 @@
-FROM centos:8 AS build
+# syntax=docker/dockerfile:1.2
+# Stream swaps to CentOS Stream once and is reused.
+FROM docker.io/library/centos:8 AS stream
+RUN set -ex\
+	; dnf -y -q install centos-release-stream \
+	; dnf -y -q swap centos-{linux,stream}-repos \
+# This "|| true" is needed if building in podman, it seems.
+# The filesystem package tries to modify permissions on /proc.
+	; dnf -y -q distro-sync || true \
+	; dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled powertools \
+	; dnf install -y gpgme-devel \
+	; dnf -y -q clean all
+
+RUN yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git perl wget make gcc
+
+
+FROM stream AS build
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
 ARG BUILDER_SRC
@@ -14,20 +30,14 @@ ENV PATH=$PATH:/usr/local/go/bin:${GOPATH}/bin
 
 RUN go version
 
-RUN yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git perl wget make gcc
-RUN dnf --enablerepo=PowerTools install -y gpgme-devel
-
 COPY . /go/src/${BUILDER_SRC}
-RUN cd /go/src/${BUILDER_SRC} && make build
+RUN cd /go/src/${BUILDER_SRC} && go mod vendor && make build
 
 
-FROM centos:8
+FROM stream AS final
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
 ARG BUILDER_SRC
-
-RUN yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git perl
-RUN dnf --enablerepo=PowerTools install -y gpgme-devel
 
 COPY --from=build /go/src/${BUILDER_SRC}/bin/quay-builder /usr/local/bin
 
@@ -35,7 +45,6 @@ COPY buildpack/ssh-git.sh /
 ADD load_extra_ca.rhel.sh /load_extra_ca.sh
 ADD entrypoint.sh /entrypoint.sh
 
-VOLUME ["/tmp"]
 VOLUME [ "/certs" ]
 
 ENTRYPOINT ["sh", "/entrypoint.sh"]
