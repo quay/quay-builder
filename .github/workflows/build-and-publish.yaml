@@ -41,7 +41,7 @@ jobs:
           TAG: ${{ steps.version-from-branch.outputs.version }}${{ env.TAG_SUFFIX }}
         with:
           build-args:
-            - BUILDER_SRC=github.com/quay/quay-builder
+            - BUILDER_SRC: github.com/quay/quay-builder
           push: true
           file: Dockerfile.alpine
           tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ env.TAG }}
