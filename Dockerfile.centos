@@ -19,7 +19,7 @@ LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
 ARG BUILDER_SRC
 
-ENV GO_VERSION=1.15.2
+ENV GO_VERSION=1.16.13
 ENV GO_OS=linux
 ENV GO_ARCH=amd64
 ENV GOPATH=/go
