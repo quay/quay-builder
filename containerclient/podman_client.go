@@ -3,13 +3,15 @@ package containerclient
 import (
 	"context"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/containers/buildah"
-	"github.com/containers/buildah/imagebuildah"
-	"github.com/containers/podman/v2/pkg/bindings"
-	"github.com/containers/podman/v2/pkg/bindings/images"
-	"github.com/containers/podman/v2/pkg/domain/entities"
+	"github.com/containers/buildah/define"
+	"github.com/containers/podman/v3/pkg/bindings"
+	"github.com/containers/podman/v3/pkg/bindings/images"
+	"github.com/containers/podman/v3/pkg/domain/entities"
+	"github.com/containers/podman/v3/pkg/domain/entities/reports"
 )
 
 func imagePath(repository, tag string) string {
@@ -47,14 +49,19 @@ func NewPodmanClient(host string) (*podmanClient, error) {
 }
 
 func (c *podmanClient) BuildImage(opts BuildImageOptions) error {
-	buildahOpts := imagebuildah.BuildOptions{
+	buildahOpts := define.BuildOptions{
 		NoCache:                 opts.NoCache,
 		RemoveIntermediateCtrs:  opts.RmTmpContainer,
 		ForceRmIntermediateCtrs: opts.ForceRmTmpContainer,
 		ContextDirectory:        opts.ContextDir,
 		Output:                  opts.Name,
+		Out:                     opts.OutputStream,
+		Err:                     opts.OutputStream,
 		Quiet:                   opts.SuppressOutput,
 		CommonBuildOpts:         &buildah.CommonBuildOptions{},
+	}
+	if os.Getenv("BULDAH_ISOLATION") == "chroot" {
+		buildahOpts.Isolation = buildah.IsolationChroot
 	}
 	podmanBuildOpts := entities.BuildOptions{BuildOptions: buildahOpts}
 	_, err := images.Build(c.podmanContext, []string{opts.Dockerfile}, podmanBuildOpts)
@@ -62,34 +69,34 @@ func (c *podmanClient) BuildImage(opts BuildImageOptions) error {
 }
 
 func (c *podmanClient) PullImage(opts PullImageOptions, auth AuthConfiguration) error {
-	fullImagePath := fullImageRef(opts.Registry, opts.Repository, opts.Tag)
-	podmanPullOpts := entities.ImagePullOptions{
-		Username: auth.Username,
-		Password: auth.Password,
+	fullImagePath := imagePath(opts.Repository, opts.Tag)
+	podmanPullOpts := images.PullOptions{
+		Username: &auth.Username,
+		Password: &auth.Password,
 	}
-	_, err := images.Pull(c.podmanContext, fullImagePath, podmanPullOpts)
+	_, err := images.Pull(c.podmanContext, fullImagePath, &podmanPullOpts)
 	return err
 }
 
 func (c *podmanClient) PushImage(opts PushImageOptions, auth AuthConfiguration) error {
+
 	imagePath := imagePath(opts.Repository, opts.Tag)
-	fullImageRef := fullImageRef(opts.Registry, opts.Repository, opts.Tag)
-	podmanPushOpts := entities.ImagePushOptions{
-		Username: auth.Username,
-		Password: auth.Password,
+	podmanPushOpts := images.PushOptions{
+		Username: &auth.Username,
+		Password: &auth.Password,
 	}
-	err := images.Push(c.podmanContext, imagePath, fullImageRef, podmanPushOpts)
+	err := images.Push(c.podmanContext, imagePath, imagePath, &podmanPushOpts)
 	return err
 }
 
 func (c *podmanClient) TagImage(name string, opts TagImageOptions) error {
-	err := images.Tag(c.podmanContext, name, opts.Tag, opts.Repository)
+	err := images.Tag(c.podmanContext, name, opts.Tag, opts.Repository, &images.TagOptions{})
 	return err
 }
 
 func (c *podmanClient) InspectImage(name string) (*Image, error) {
-	ttrue := true
-	imageReport, err := images.GetImage(c.podmanContext, name, &ttrue)
+	getOptions := images.GetOptions{}
+	imageReport, err := images.GetImage(c.podmanContext, name, &getOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -100,15 +107,24 @@ func (c *podmanClient) InspectImage(name string) (*Image, error) {
 }
 
 func (c *podmanClient) RemoveImageExtended(name string, opts RemoveImageOptions) error {
-	_, err := images.Remove(c.podmanContext, name, opts.Force)
-	return err
+	removeOptions := images.RemoveOptions{
+		Force: &opts.Force,
+	}
+	_, err := images.Remove(c.podmanContext, []string{name}, &removeOptions)
+	if len(err) > 0 {
+		return err[0]
+	}
+	return nil
 }
 
 func (c *podmanClient) PruneImages(opts PruneImagesOptions) (*PruneImagesResults, error) {
-	ttrue := true
-	imagesDeleted, err := images.Prune(c.podmanContext, &ttrue, opts.Filters)
+	pruneOptions := images.PruneOptions{
+		Filters: opts.Filters,
+	}
+	imagesDeletedReports, err := images.Prune(c.podmanContext, &pruneOptions)
 	if err != nil {
 		return nil, err
 	}
+	imagesDeleted := reports.PruneReportsIds(imagesDeletedReports)
 	return &PruneImagesResults{ImagesDeleted: imagesDeleted}, nil
 }

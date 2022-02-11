@@ -75,8 +75,10 @@ func NewMetadataFromReader(r io.Reader, buildContextDirectory string) (*Metadata
 	stages, metaArgs, _ := instructions.Parse(ast)
 	if ast.Children[0].Value == "arg" {
 		for _, metaArg := range metaArgs {
-			if metaArg.Value != nil {
-				substitutionArgs = append(substitutionArgs, metaArg.Key+"="+*metaArg.Value)
+			for _, arg := range metaArg.Args {
+				if arg.Value != nil {
+					substitutionArgs = append(substitutionArgs, arg.Key+"="+*arg.Value)
+				}
 			}
 		}
 		shlex := shell.NewLex(parsed.EscapeToken)
