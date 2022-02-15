@@ -28,8 +28,5 @@ bin/quay-builder:
 install:
 	go install -ldflags $(LD_FLAGS) $(REPO_PATH)/cmd/quay-builder
 
-build-centos:
-	docker build --build-arg=BUILDER_SRC=$(BUILDER_SRC) -f Dockerfile.centos -t $(IMAGE):$(IMAGE_TAG)-centos .
-
-build-alpine:
-	docker build --build-arg=BUILDER_SRC=$(BUILDER_SRC) -f Dockerfile.alpine -t $(IMAGE):$(IMAGE_TAG)-alpine .
+build-ubi8:
+	docker build --build-arg=BUILDER_SRC=$(BUILDER_SRC) -f Dockerfile -t $(IMAGE):$(IMAGE_TAG)-ubi8 .
