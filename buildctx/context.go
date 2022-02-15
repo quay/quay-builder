@@ -101,10 +101,11 @@ func (bc *Context) Pull() error {
 // Cache calls an RPC to the BuildManager to find the best tag to pull for
 // caching and then "docker pull"s it.
 func (bc *Context) Cache() error {
-	if err := bc.client.SetPhase(rpc.CheckingCache, nil); err != nil {
-		log.Errorf("failed to update phase to `checking-cache`")
-		return err
-	}
+	// Attempts to update the phase to checking cache.
+	// We don't handle the error here, as we currently consider the rpc.CheckingCache phase pulling,
+	// SetPhase will return an rpc.ErrClientRejectedPhaseTransition, since the phase will not change
+	// from the previous one (rpc.CheckingCache).
+	bc.client.SetPhase(rpc.CheckingCache, nil)
 
 	// Attempt to calculate the optimal tag. If we cannot find a tag, then caching is simply
 	// skipped.
@@ -116,10 +117,7 @@ func (bc *Context) Cache() error {
 
 	// Conduct a pull of the existing tag (if any). This will prime the cache.
 	if bc.args.PullToken != "" && cachedTag != "" {
-		if err := bc.client.SetPhase(rpc.PrimingCache, nil); err != nil {
-			log.Errorf("failed to update phase to `priming-cache`")
-			return err
-		}
+		bc.client.SetPhase(rpc.PrimingCache, nil)
 
 		err = primeCache(bc.writer, bc.containerClient, bc.args, cachedTag)
 		if err != nil {

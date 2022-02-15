@@ -170,6 +170,9 @@ func (c *grpcClient) PublishBuildLogEntry(entry string) error {
 			LogMessage:     entry,
 		},
 	)
+	if err == io.EOF {
+		return nil
+	}
 	if err != nil {
 		log.Warningf("failed to get log message: %s", err)
 		c.logSequenceNum -= 1
