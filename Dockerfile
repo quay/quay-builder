@@ -1,21 +1,15 @@
 # syntax=docker/dockerfile:1.2
 # Stream swaps to CentOS Stream once and is reused.
-FROM docker.io/library/centos:8 AS stream
+# FROM quay.io/centos/centos:stream8 AS stream
+FROM registry.access.redhat.com/ubi8/ubi:latest as base
 RUN set -ex\
-	; dnf -y -q install centos-release-stream \
-	; dnf -y -q swap centos-{linux,stream}-repos \
-# This "|| true" is needed if building in podman, it seems.
-# The filesystem package tries to modify permissions on /proc.
-	; dnf -y -q distro-sync || true \
-	; dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled powertools \
 	; dnf install -y gpgme-devel \
 	; dnf -y -q clean all
 
-RUN yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git perl wget make gcc
+RUN dnf install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git perl wget make gcc
 
 
-FROM stream AS build
-LABEL maintainer "Quay devel<quay-devel@redhat.com>"
+FROM base AS build
 
 ARG BUILDER_SRC
 
@@ -34,7 +28,7 @@ COPY . /go/src/${BUILDER_SRC}
 RUN cd /go/src/${BUILDER_SRC} && go mod vendor && make build
 
 
-FROM stream AS final
+FROM base AS final
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
 ARG BUILDER_SRC
