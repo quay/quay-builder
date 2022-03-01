@@ -5,6 +5,13 @@ on:
   push:
     branches:
       - redhat-** # IMPORTANT! this must match the jobs.build-and-publish.env.BRANCH_PREFIX (save the **).
+  
+  workflow_dispatch:
+    # Allows you to run this workflow manually from the Actions tab
+    inputs:
+      tag:
+        description: 'Tag to attach to image'     
+        required: true
 
 jobs:
   build-and-publish:
@@ -35,13 +42,12 @@ jobs:
 
       - name: Build and push
         id: docker_build
-        if: startsWith('env.BRANCH_PREFIX', env.GITHUB_REF)
         uses: docker/build-push-action@v2
         env:
           TAG: ${{ steps.version-from-branch.outputs.version }}${{ env.TAG_SUFFIX }}
         with:
           build-args: BUILDER_SRC=github.com/quay/quay-builder
           push: true
-          file: Dockerfile.alpine
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ env.TAG }}
+          file: Dockerfile
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.event.inputs.tag || env.TAG }}
 
