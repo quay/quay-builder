@@ -22,7 +22,7 @@ import (
 
 const (
 	quayDocsSubmoduleURL = "http://docs.quay.io/guides/git-submodules.html"
-	processIdleTimeout   = time.Minute
+	processIdleTimeout   = time.Minute * 3
 	processTimeout       = time.Minute * 15
 )
 
