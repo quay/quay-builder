@@ -5,7 +5,7 @@ COPY . /go/src/
 RUN cd /go/src/ && env GOOS=linux GOARCH=amd64 make build
 
 
-FROM registry.access.redhat.com/ubi8/podman:8.5-15
+FROM registry.access.redhat.com/ubi8/podman:8.6-12
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
 RUN set -ex\
@@ -26,7 +26,7 @@ RUN touch /etc/subgid /etc/subuid && \
 	mkdir -p /home/podman/.config/containers && \
     (echo '[storage]';echo 'driver = "vfs"') > /home/podman/.config/containers/storage.conf && \ 
     sed -i 's/short-name-mode="enforcing"/short-name-mode="permissive"/g' /etc/containers/registries.conf && \
-	mkdir /certs && chown podman:podman /certs
+	mkdir /certs /home/podman/.config/cni && chown podman:podman /certs /home/podman/.config/cni
 
 VOLUME [ "/certs" ]
 
