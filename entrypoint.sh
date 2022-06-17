@@ -9,6 +9,8 @@ setup_kubernetes_podman(){
         echo "[INFO]: CA_CERT found, writing out to /certs/cacert.crt"
         echo "${CA_CERT}" > /certs/cacert.crt
     fi
+    cat /etc/pki/tls/certs/ca-bundle.crt >> /certs/cacert.crt
+    chmod 400 /certs/cacert.crt
 
     # Start podman service
     PODMAN_OPTS="--log-level=error"
