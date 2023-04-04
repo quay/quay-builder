@@ -2,8 +2,10 @@ FROM registry.access.redhat.com/ubi8/go-toolset:1.16.12-4 as build
 USER root
 RUN dnf install -y --setopt=tsflags=nodocs git
 COPY . /go/src/
-RUN cd /go/src/ && env GOOS=linux GOARCH=amd64 make build
-
+RUN ARCH=$(uname -m) ; echo $ARCH \
+    ; if [ "$ARCH" == "x86_64" ] ; then ARCH="amd64" ; elif [ "$ARCH" == "s390x" ] ; then ARCH="s390x" ; fi \
+    ; cd /go/src/ && env GOOS=linux GOARCH=${ARCH} make build \
+    ; 
 
 FROM registry.access.redhat.com/ubi8/podman:8.6-12
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
