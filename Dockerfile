@@ -2,8 +2,7 @@ FROM registry.access.redhat.com/ubi8/go-toolset:1.16.12-4 as build
 USER root
 RUN dnf install -y --setopt=tsflags=nodocs git
 COPY . /go/src/
-RUN cd /go/src/ && env GOOS=linux GOARCH=amd64 make build
-
+RUN cd /go/src/ && make build
 
 FROM registry.access.redhat.com/ubi8/podman:8.6-12
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
