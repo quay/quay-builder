@@ -14,7 +14,7 @@ go 1.16
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20200131002800-4ca7245c29b1 // indirect
 	github.com/cloudfoundry/archiver v0.0.0-20200131002800-4ca7245c29b1
-	github.com/containerd/containerd v1.5.8 // indirect
+	github.com/containerd/containerd v1.5.18 // indirect
 	github.com/containers/buildah v1.23.4
 	github.com/containers/common v0.44.4 // indirect
 	github.com/containers/image/v5 v5.17.0 // indirect
