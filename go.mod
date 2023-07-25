@@ -19,7 +19,7 @@ require (
 	github.com/containers/common v0.44.4 // indirect
 	github.com/containers/image/v5 v5.17.0 // indirect
 	github.com/containers/podman/v3 v3.4.2
-	github.com/docker/distribution v2.7.1+incompatible
+	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v20.10.11+incompatible
 	github.com/fsouza/go-dockerclient v1.7.4
 	github.com/golang/protobuf v1.5.2
