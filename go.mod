@@ -14,18 +14,15 @@ go 1.16
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20200131002800-4ca7245c29b1 // indirect
 	github.com/cloudfoundry/archiver v0.0.0-20200131002800-4ca7245c29b1
-	github.com/containerd/containerd v1.5.8 // indirect
-	github.com/containers/buildah v1.23.4
-	github.com/containers/common v0.44.4 // indirect
-	github.com/containers/image/v5 v5.17.0 // indirect
+	github.com/containers/buildah v1.27.1
 	github.com/containers/podman/v3 v3.4.2
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v20.10.24+incompatible
-	github.com/fsouza/go-dockerclient v1.7.4
+	github.com/fsouza/go-dockerclient v1.8.1
 	github.com/golang/protobuf v1.5.2
 	github.com/moby/buildkit v0.8.3
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
-	github.com/sirupsen/logrus v1.8.1
-	google.golang.org/grpc v1.41.0
-	google.golang.org/protobuf v1.27.1
+	github.com/sirupsen/logrus v1.9.0
+	google.golang.org/grpc v1.47.0
+	google.golang.org/protobuf v1.28.0
 )
