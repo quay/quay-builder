@@ -67,13 +67,15 @@ func NewMetadataFromReader(r io.Reader, buildContextDirectory string) (*Metadata
 		return nil, ErrEmptyDockerfile
 	}
 
+	first_cmd := strings.ToLower(ast.Children[0].Value)
+
 	// Make sure the first command is either FROM or ARG
-	if ast.Children[0].Value != "arg" && ast.Children[0].Value != "from" {
+	if first_cmd != "arg" && first_cmd != "from" {
 		return nil, ErrDockerfileMissingFROMorARG
 	}
 
 	stages, metaArgs, _ := instructions.Parse(ast)
-	if ast.Children[0].Value == "arg" {
+	if first_cmd == "arg" {
 		for _, metaArg := range metaArgs {
 			for _, arg := range metaArg.Args {
 				if arg.Value != nil {
@@ -84,7 +86,7 @@ func NewMetadataFromReader(r io.Reader, buildContextDirectory string) (*Metadata
 		shlex := shell.NewLex(parsed.EscapeToken)
 		imageAndTag, _ = shlex.ProcessWord(stages[0].BaseName, substitutionArgs)
 
-	} else if ast.Children[0].Value == "from" {
+	} else if first_cmd == "from" {
 		imageAndTag = stages[0].BaseName
 	}
 
