@@ -16,9 +16,7 @@ require (
 	github.com/cloudfoundry/archiver v0.0.0-20200131002800-4ca7245c29b1
 	github.com/containerd/containerd v1.5.8 // indirect
 	github.com/containers/buildah v1.23.4
-	github.com/containers/common v0.44.4 // indirect
-	github.com/containers/image/v5 v5.17.0 // indirect
-	github.com/containers/podman/v3 v3.4.2
+	github.com/containers/podman/v3 v3.4.3
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v20.10.24+incompatible
 	github.com/fsouza/go-dockerclient v1.7.4
