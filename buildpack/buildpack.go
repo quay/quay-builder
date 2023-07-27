@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cloudfoundry/archiver/extractor"
+	"code.cloudfoundry.org/archiver/extractor"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/quay/quay-builder/rpc"
