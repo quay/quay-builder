@@ -10,7 +10,7 @@ require (
 	github.com/docker/docker v24.0.5+incompatible
 	github.com/fsouza/go-dockerclient v1.9.7
 	github.com/golang/protobuf v1.5.3
-	github.com/moby/buildkit v0.10.6
+	github.com/moby/buildkit v0.11.4
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/sirupsen/logrus v1.9.3
 	google.golang.org/grpc v1.56.2
