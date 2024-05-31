@@ -39,7 +39,7 @@ require (
 	github.com/containernetworking/cni v1.1.2 // indirect
 	github.com/containernetworking/plugins v1.4.0 // indirect
 	github.com/containers/common v0.57.1-0.20240207210145-1eeaf97594e9 // indirect
-	github.com/containers/image/v5 v5.29.2-0.20240130233108-e66a1ade2efc // indirect
+	github.com/containers/image/v5 v5.29.3 // indirect
 	github.com/containers/libtrust v0.0.0-20230121012942-c1716e8a8d01 // indirect
 	github.com/containers/luksy v0.0.0-20240129181507-b62d551ce6d8 // indirect
 	github.com/containers/ocicrypt v1.1.9 // indirect
