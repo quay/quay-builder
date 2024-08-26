@@ -1,6 +1,6 @@
 module github.com/quay/quay-builder
 
-go 1.20
+go 1.21
 
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
