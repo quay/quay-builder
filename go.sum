@@ -65,8 +65,8 @@ github.com/containernetworking/cni v1.1.2 h1:wtRGZVv7olUHMOqouPpn3cXJWpJgM6+EUl3
 github.com/containernetworking/cni v1.1.2/go.mod h1:sDpYKmGVENF3s6uvMvGgldDWeG8dMxakj/u+i9ht9vw=
 github.com/containernetworking/plugins v1.4.0 h1:+w22VPYgk7nQHw7KT92lsRmuToHvb7wwSv9iTbXzzic=
 github.com/containernetworking/plugins v1.4.0/go.mod h1:UYhcOyjefnrQvKvmmyEKsUA+M9Nfn7tqULPpH0Pkcj0=
-github.com/containers/buildah v1.34.1-0.20240201124221-b850c711ff5c h1:r+1vFyTAoXptJrsPsnOMI3G0jm4+BCfXAcIyuA33lzo=
-github.com/containers/buildah v1.34.1-0.20240201124221-b850c711ff5c/go.mod h1:Hw4qo2URFpWvZ2tjLstoQMpNC6+gR4PtxQefvV/UKaA=
+github.com/containers/buildah v1.34.3 h1:hoj7296UnIpfw41ZOITLM+jiqkwpkkT8NeZ3ESm2zQs=
+github.com/containers/buildah v1.34.3/go.mod h1:cKJ1H/X26vQR2/tN1KNuSgOCQXrXLdhpkt9NWHYdgFk=
 github.com/containers/common v0.57.1-0.20240207210145-1eeaf97594e9 h1:JFkj+j5hSOJdCpLhpx+xp1pEbMfXj2xtorRx223PqYo=
 github.com/containers/common v0.57.1-0.20240207210145-1eeaf97594e9/go.mod h1:0NtD59teSfqhgJqcgg73on5AuaGo8XbbVLv+i2bl0oY=
 github.com/containers/image/v5 v5.29.2-0.20240130233108-e66a1ade2efc h1:3I5+mrrG7Fuv4aA13t1hAMQcjN3rTAQInfbxa5P+XH4=
@@ -682,8 +682,8 @@ google.golang.org/protobuf v1.25.0/go.mod h1:9JNX74DMeImyA3h4bdi1ymwjUzf21/xIlba
 google.golang.org/protobuf v1.26.0-rc.1/go.mod h1:jlhhOSvTdKEhbULTjvd4ARK9grFBp09yW+WbY/TyQbw=
 google.golang.org/protobuf v1.26.0/go.mod h1:9q0QmTI4eRPtz6boOQmLYwt+qCgq0jsYwAQnmE0givc=
 google.golang.org/protobuf v1.27.1/go.mod h1:9q0QmTI4eRPtz6boOQmLYwt+qCgq0jsYwAQnmE0givc=
-google.golang.org/protobuf v1.32.0 h1:pPC6BG5ex8PDFnkbrGU3EixyhKcQ2aDuBS36lqK/C7I=
-google.golang.org/protobuf v1.32.0/go.mod h1:c6P6GXX6sHbq/GpV6MGZEdwhWPcYBgnhAHhKbcUYpos=
+google.golang.org/protobuf v1.33.0 h1:uNO2rsAINq/JlFpSdYEKIZ0uKD/R9cpdv0T+yoGwGmI=
+google.golang.org/protobuf v1.33.0/go.mod h1:c6P6GXX6sHbq/GpV6MGZEdwhWPcYBgnhAHhKbcUYpos=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
