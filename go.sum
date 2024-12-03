@@ -76,8 +76,8 @@ github.com/containers/luksy v0.0.0-20241007190014-e2530d691420 h1:57rxgU2wdI3lZM
 github.com/containers/luksy v0.0.0-20241007190014-e2530d691420/go.mod h1:MYzFCudLgMcXgFl7XuFjUowNDTBqL09BfEgMf7QHtO4=
 github.com/containers/ocicrypt v1.2.0 h1:X14EgRK3xNFvJEfI5O4Qn4T3E25ANudSOZz/sirVuPM=
 github.com/containers/ocicrypt v1.2.0/go.mod h1:ZNviigQajtdlxIZGibvblVuIFBKIuUI2M0QM12SD31U=
-github.com/containers/podman/v5 v5.3.1 h1:KuhrhsuLerfzklxZmCf40QA/DLtsuFJs+RTVUNmX8Ao=
-github.com/containers/podman/v5 v5.3.1/go.mod h1:xUbIlPCLXYMmjs1FHVtNbYWYlDONCFxzZK8MaHMcFlI=
+github.com/containers/podman/v5 v5.3.0 h1:C/eK7Ek1XV+ZX5nUQaqK5OM2+WTtDpLrybOHEbmgAuA=
+github.com/containers/podman/v5 v5.3.0/go.mod h1:xUbIlPCLXYMmjs1FHVtNbYWYlDONCFxzZK8MaHMcFlI=
 github.com/containers/psgo v1.9.0 h1:eJ74jzSaCHnWt26OlKZROSyUyRcGDf+gYBdXnxrMW4g=
 github.com/containers/psgo v1.9.0/go.mod h1:0YoluUm43Mz2UnBIh1P+6V6NWcbpTL5uRtXyOcH0B5A=
 github.com/containers/storage v1.56.0 h1:DZ9KSkj6M2tvj/4bBoaJu3QDHRl35BwsZ4kmLJS97ZI=
@@ -248,8 +248,8 @@ github.com/mistifyio/go-zfs/v3 v3.0.1 h1:YaoXgBePoMA12+S1u/ddkv+QqxcfiZK4prI6HPn
 github.com/mistifyio/go-zfs/v3 v3.0.1/go.mod h1:CzVgeB0RvF2EGzQnytKVvVSDwmKJXxkOTUGbNrTja/k=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
-github.com/moby/buildkit v0.18.1 h1:Iwrz2F/Za2Gjkpwu3aM2LX92AFfJCJe2oNnvGNvh2Rc=
-github.com/moby/buildkit v0.18.1/go.mod h1:vCR5CX8NGsPTthTg681+9kdmfvkvqJBXEv71GZe5msU=
+github.com/moby/buildkit v0.18.0 h1:KSelhNINJcNA3FCWBbGCytvicjP+kjU5kZlZhkTUkVo=
+github.com/moby/buildkit v0.18.0/go.mod h1:vCR5CX8NGsPTthTg681+9kdmfvkvqJBXEv71GZe5msU=
 github.com/moby/docker-image-spec v1.3.1 h1:jMKff3w6PgbfSa69GfNg+zN/XLhfXJGnEx3Nl2EsFP0=
 github.com/moby/docker-image-spec v1.3.1/go.mod h1:eKmb5VW8vQEh/BAr2yvVNvuiJuY6UIocYsFu/DxxRpo=
 github.com/moby/patternmatcher v0.6.0 h1:GmP9lR19aU5GqSSFko+5pRqHi+Ohk1O69aFiKkVGiPk=
