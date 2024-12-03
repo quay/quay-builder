@@ -7,7 +7,7 @@ toolchain go1.22.9
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
 	github.com/containers/buildah v1.38.0
-	github.com/containers/podman/v5 v5.0.0-rc2
+	github.com/containers/podman/v5 v5.3.0
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker v27.4.0-rc.2+incompatible
 	github.com/fsouza/go-dockerclient v1.12.0
@@ -72,7 +72,7 @@ require (
 	github.com/go-openapi/strfmt v0.23.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-openapi/validate v0.24.0 // indirect
-	github.com/godbus/dbus/v5 v5.1.1-0.20230522191255-76236955d466 // indirect
+	github.com/godbus/dbus/v5 v5.1.1-0.20240921181615-a817f3cc4a9e // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/go-containerregistry v0.20.2 // indirect
@@ -85,6 +85,7 @@ require (
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/kr/fs v0.1.0 // indirect
