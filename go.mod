@@ -1,6 +1,6 @@
 module github.com/quay/quay-builder
 
-go 1.22.6
+go 1.22.7
 
 toolchain go1.23.0
 
