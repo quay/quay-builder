@@ -8,14 +8,14 @@ require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
 	github.com/containers/buildah v1.38.0
 	github.com/containers/podman/v5 v5.3.1
-	github.com/docker/distribution v2.8.3+incompatible
-	github.com/docker/docker v27.3.1+incompatible
+	github.com/distribution/reference v0.6.0
+	github.com/docker/docker v27.4.0-rc.2+incompatible
 	github.com/fsouza/go-dockerclient v1.12.0
 	github.com/golang/protobuf v1.5.4
-	github.com/moby/buildkit v0.17.1
+	github.com/moby/buildkit v0.18.1
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/sirupsen/logrus v1.9.3
-	google.golang.org/grpc v1.67.0
+	google.golang.org/grpc v1.68.0
 	google.golang.org/protobuf v1.35.1
 )
 
@@ -38,7 +38,7 @@ require (
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/containerd/platforms v0.2.1 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.15.1 // indirect
-	github.com/containerd/typeurl/v2 v2.2.0 // indirect
+	github.com/containerd/typeurl/v2 v2.2.3 // indirect
 	github.com/containernetworking/cni v1.2.3 // indirect
 	github.com/containernetworking/plugins v1.5.1 // indirect
 	github.com/containers/common v0.61.0 // indirect
@@ -53,7 +53,7 @@ require (
 	github.com/cyphar/filepath-securejoin v0.3.4 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/disiqueira/gotree/v3 v3.0.2 // indirect
-	github.com/distribution/reference v0.6.0 // indirect
+	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.8.2 // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
