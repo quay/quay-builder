@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:1.21.11 as build
+FROM registry.access.redhat.com/ubi8/go-toolset:1.22.7 as build
 USER root
 RUN dnf install -y --setopt=tsflags=nodocs git
 COPY . /go/src/

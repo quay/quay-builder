@@ -7,10 +7,11 @@ import (
 	"path"
 	"strings"
 
+	"github.com/distribution/reference"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/docker/distribution/reference"
 	"github.com/moby/buildkit/frontend/dockerfile/instructions"
+	"github.com/moby/buildkit/frontend/dockerfile/linter"
 	"github.com/moby/buildkit/frontend/dockerfile/parser"
 	"github.com/moby/buildkit/frontend/dockerfile/shell"
 
@@ -46,11 +47,29 @@ type Metadata struct {
 	BaseImageTag string
 }
 
+type envGetter struct {
+	env  map[string]string
+	keys []string
+}
+
+func (e *envGetter) Add(key string, val string) {
+	e.env[key] = val
+	e.keys = append(e.keys, key)
+}
+
+func (e *envGetter) Get(key string) (string, bool) {
+	v, ok := e.env[key]
+	return v, ok
+}
+
+func (e *envGetter) Keys() []string {
+	return e.keys
+}
+
 // NewMetadataFromReader parses a Dockerfile reader generates metadata based on
 // the contents.
 func NewMetadataFromReader(r io.Reader, buildContextDirectory string) (*Metadata, error) {
 	var imageAndTag string
-	substitutionArgs := []string{}
 
 	// Parse the Dockerfile.
 	parsed, err := parser.Parse(bufio.NewReader(r))
@@ -74,17 +93,19 @@ func NewMetadataFromReader(r io.Reader, buildContextDirectory string) (*Metadata
 		return nil, ErrDockerfileMissingFROMorARG
 	}
 
-	stages, metaArgs, _ := instructions.Parse(ast)
+	linter := linter.New(&linter.Config{})
+	stages, metaArgs, _ := instructions.Parse(ast, linter)
+	envGetter := &envGetter{env: map[string]string{}, keys: []string{}}
 	if first_cmd == "arg" {
 		for _, metaArg := range metaArgs {
 			for _, arg := range metaArg.Args {
 				if arg.Value != nil {
-					substitutionArgs = append(substitutionArgs, arg.Key+"="+*arg.Value)
+					envGetter.Add(arg.Key, *arg.Value)
 				}
 			}
 		}
 		shlex := shell.NewLex(parsed.EscapeToken)
-		imageAndTag, _ = shlex.ProcessWord(stages[0].BaseName, substitutionArgs)
+		imageAndTag, _, _ = shlex.ProcessWord(stages[0].BaseName, envGetter)
 
 	} else if first_cmd == "from" {
 		imageAndTag = stages[0].BaseName
