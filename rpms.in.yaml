@@ -1,3 +1,4 @@
 packages: [git, wget]
 contentOrigin:
   repofiles: ["./ubi.repo"]
+arches: [x86_64]
