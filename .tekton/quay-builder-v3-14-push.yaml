@@ -28,6 +28,12 @@ spec:
     - linux/x86_64
   - name: dockerfile
     value: Dockerfile
+  - name: build-source-image
+    value: "true"
+  - name: hermetic
+    value: "true"
+  - name: prefetch-input
+    value: '{"type": "gomod", "path": "."}'
   pipelineSpec:
     description: |
       This pipeline is ideal for building multi-arch container images from a Containerfile while maintaining trust after pipeline customization.
@@ -232,6 +238,15 @@ spec:
         value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
       - name: IMAGE_APPEND_PLATFORM
         value: "true"
+      - name: LABELS
+        value: 
+          - com.redhat.component="quay-builder-container"
+          - name="quay/quay-builder-rhel8"
+          - io.k8s.display-name="Red Hat Quay - Builder"
+          - io.k8s.description="Red Hat Quay image builder"
+          - io.openshift.tags="quay"
+          - summary="Red Hat Quay image builder"
+          - description="Red Hat Quay image builder"
       runAfter:
       - prefetch-dependencies
       taskRef:
