@@ -1,0 +1,3 @@
+packages: [git, wget]
+contentOrigin:
+  repofiles: ["./ubi.repo"]
