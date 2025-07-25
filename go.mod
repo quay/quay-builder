@@ -2,8 +2,6 @@ module github.com/quay/quay-builder
 
 go 1.23.3
 
-toolchain go1.22.9
-
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
 	github.com/containers/buildah v1.40.1
