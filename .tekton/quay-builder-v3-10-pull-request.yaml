@@ -30,7 +30,7 @@ spec:
     value:
     - linux/x86_64
   - name: dockerfile
-    value: Dockerfile
+    value: Containerfile.quay-builder
   - name: build-source-image
     value: "true"
   - name: hermetic
