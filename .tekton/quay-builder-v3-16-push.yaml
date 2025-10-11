@@ -30,7 +30,7 @@ spec:
     - linux/ppc64le
     - linux/s390x
   - name: dockerfile
-    value: Dockerfile
+    value: Containerfile.quay-builder
   - name: build-source-image
     value: "true"
   - name: hermetic
@@ -250,12 +250,13 @@ spec:
       - name: LABELS
         value:
         - com.redhat.component="quay-builder-container"
-        - name="quay/quay-builder-rhel8"
+        - name="quay/quay-builder-rhel9"
         - io.k8s.display-name="Red Hat Quay - Builder"
         - io.k8s.description="Red Hat Quay image builder"
         - io.openshift.tags="quay"
         - summary="Red Hat Quay image builder"
         - description="Red Hat Quay image builder"
+        - cpe="cpe:/a:redhat:quay:3.16::el9"
       runAfter:
       - prefetch-dependencies
       taskRef:
