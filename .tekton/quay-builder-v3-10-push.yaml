@@ -30,7 +30,7 @@ spec:
     - linux/ppc64le
     - linux/s390x
   - name: dockerfile
-    value: Dockerfile
+    value: Containerfile.quay-builder
   - name: build-source-image
     value: "true"
   - name: hermetic
