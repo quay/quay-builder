@@ -40,7 +40,7 @@ require (
 	github.com/containerd/platforms v0.2.1 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.15.1 // indirect
 	github.com/containerd/typeurl/v2 v2.2.3 // indirect
-	github.com/containernetworking/cni v1.2.3 // indirect
+	github.com/containernetworking/cni v1.3.0 // indirect
 	github.com/containernetworking/plugins v1.5.1 // indirect
 	github.com/containers/common v0.61.0 // indirect
 	github.com/containers/image/v5 v5.33.0 // indirect
