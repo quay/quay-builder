@@ -1,16 +1,16 @@
 module github.com/quay/quay-builder
 
-go 1.23.0
+go 1.24.0
 
-toolchain go1.23.6
+toolchain go1.24.6
 
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
 	github.com/containers/buildah v1.38.0
 	github.com/containers/podman/v5 v5.3.0
 	github.com/distribution/reference v0.6.0
-	github.com/docker/docker v27.4.0-rc.2+incompatible
-	github.com/fsouza/go-dockerclient v1.12.0
+	github.com/docker/docker v28.5.2+incompatible
+	github.com/fsouza/go-dockerclient v1.12.3
 	github.com/golang/protobuf v1.5.4
 	github.com/moby/buildkit v0.18.0
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
@@ -86,7 +86,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
-	github.com/klauspost/compress v1.17.11 // indirect
+	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/letsencrypt/boulder v0.0.0-20240620165639-de9c06129bec // indirect
@@ -99,11 +99,13 @@ require (
 	github.com/mistifyio/go-zfs/v3 v3.0.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
+	github.com/moby/go-archive v0.1.0 // indirect
 	github.com/moby/patternmatcher v0.6.0 // indirect
+	github.com/moby/sys/atomicwriter v0.1.0 // indirect
 	github.com/moby/sys/capability v0.3.0 // indirect
 	github.com/moby/sys/mountinfo v0.7.2 // indirect
 	github.com/moby/sys/sequential v0.6.0 // indirect
-	github.com/moby/sys/user v0.3.0 // indirect
+	github.com/moby/sys/user v0.4.0 // indirect
 	github.com/moby/sys/userns v0.1.0 // indirect
 	github.com/moby/term v0.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -157,8 +159,8 @@ require (
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/term v0.29.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/term v0.37.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240903143218-8af14fe29dc1 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
