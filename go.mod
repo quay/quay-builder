@@ -35,7 +35,7 @@ require (
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/containerd/platforms v1.0.0-rc.1 // indirect
-	github.com/containerd/stargz-snapshotter/estargz v0.16.3 // indirect
+	github.com/containerd/stargz-snapshotter/estargz v0.18.1 // indirect
 	github.com/containerd/typeurl/v2 v2.2.3 // indirect
 	github.com/containernetworking/cni v1.3.0 // indirect
 	github.com/containernetworking/plugins v1.6.2 // indirect
@@ -84,7 +84,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
-	github.com/klauspost/compress v1.18.0 // indirect
+	github.com/klauspost/compress v1.18.1 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/letsencrypt/boulder v0.0.0-20240620165639-de9c06129bec // indirect
