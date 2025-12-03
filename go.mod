@@ -6,7 +6,7 @@ toolchain go1.23.6
 
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
-	github.com/containers/buildah v1.38.0
+	github.com/containers/buildah v1.42.2
 	github.com/containers/podman/v5 v5.3.0
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker v27.4.0-rc.2+incompatible
