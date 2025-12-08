@@ -32,6 +32,8 @@ RUN touch /etc/subgid /etc/subuid && \
     sed -i 's/short-name-mode="enforcing"/short-name-mode="permissive"/g' /etc/containers/registries.conf && \
 	mkdir /certs /home/podman/.config/cni && chown podman:podman /certs /home/podman/.config/cni
 
+LABEL version=3.13.0
+
 VOLUME [ "/certs" ]
 
 WORKDIR /home/podman

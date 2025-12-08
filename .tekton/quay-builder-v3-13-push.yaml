@@ -260,6 +260,11 @@ spec:
         - io.openshift.tags="quay"
         - summary="Red Hat Quay image builder"
         - description="Red Hat Quay image builder"
+        - cpe="cpe:/a:redhat:quay:3.13::el8"
+        - vendor=Red Hat, Inc.
+        - distribution-scope=restricted
+        - url=https://docs.redhat.com/en/documentation/red_hat_quay/3.13
+        - release=3.13
       - name: BUILDAH_FORMAT
         value: $(params.buildah-format)
       runAfter:
