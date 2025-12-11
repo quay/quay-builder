@@ -21,7 +21,7 @@ setup_kubernetes_podman(){
 
     # Ensure socket exists
     # Extract socket path from DOCKER_HOST (default: unix:///tmp/storage-run-1000/podman/podman.sock)
-    DOCKER_HOST_VAR="${DOCKER_HOST:-unix:///tmp/storage-run-1000/podman/podman.sock}"
+    DOCKER_HOST_VAR="${DOCKER_HOST:-unix:///tmp/podman-run-1000/podman/podman.sock}"
     SOCKET_PATH="${DOCKER_HOST_VAR#unix://}"
 
     RETRIES=5

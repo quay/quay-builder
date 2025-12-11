@@ -1,10 +1,10 @@
-FROM registry.access.redhat.com/ubi9/go-toolset:1.25.3-1764620329 AS build
+FROM registry.access.redhat.com/ubi8/go-toolset:1.23.6-2 as build
 USER root
 RUN dnf install -y --setopt=tsflags=nodocs git
 COPY . /go/src/
 RUN cd /go/src/ && make build
 
-FROM registry.access.redhat.com/ubi9/podman
+FROM registry.access.redhat.com/ubi8/podman
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
 RUN set -ex\
