@@ -28,13 +28,38 @@ setup_kubernetes_podman(){
     while [[ ! -S "$SOCKET_PATH" ]]
     do
         if [[ $RETRIES -eq 0 ]]; then
-            echo "[ERROR]: podman socket not found at $SOCKET_PATH, exiting"
-            exit 1
+            echo "[WARN]: podman socket not found at $SOCKET_PATH after retries"
+            break
         fi
         echo "[INFO]: Waiting for podman socket at $SOCKET_PATH to start. Checking again in 3s..."
         sleep 3s
         RETRIES=$((RETRIES - 1))
     done
+
+    # If socket still not found, try fallback
+    if [[ ! -S "$SOCKET_PATH" ]]; then
+        FALLBACK_SOCKET="/tmp/storage-run-1000/podman/podman.sock"
+        if [[ "$SOCKET_PATH" != "$FALLBACK_SOCKET" ]]; then
+            echo "[INFO]: Attempting fallback socket at $FALLBACK_SOCKET"
+            export DOCKER_HOST="unix://$FALLBACK_SOCKET"
+            SOCKET_PATH="$FALLBACK_SOCKET"
+
+            RETRIES=5
+            while [[ ! -S "$SOCKET_PATH" ]]
+            do
+                if [[ $RETRIES -eq 0 ]]; then
+                    echo "[ERROR]: podman socket not found at $SOCKET_PATH, exiting"
+                    exit 1
+                fi
+                echo "[INFO]: Waiting for podman socket at $SOCKET_PATH to start. Checking again in 3s..."
+                sleep 3s
+                RETRIES=$((RETRIES - 1))
+            done
+        else
+            echo "[ERROR]: podman socket not found at $SOCKET_PATH, exiting"
+            exit 1
+        fi
+    fi
 }
 
 load_extra_ca(){
