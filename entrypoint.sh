@@ -19,15 +19,19 @@ setup_kubernetes_podman(){
     fi
     podman $PODMAN_OPTS system service --time 0 &
 
-    # Ensure socket exists 
+    # Ensure socket exists
+    # Extract socket path from DOCKER_HOST (default: unix:///tmp/storage-run-1000/podman/podman.sock)
+    DOCKER_HOST_VAR="${DOCKER_HOST:-unix:///tmp/storage-run-1000/podman/podman.sock}"
+    SOCKET_PATH="${DOCKER_HOST_VAR#unix://}"
+
     RETRIES=5
-    while [[ ! -S '/tmp/podman-run-1000/podman/podman.sock' ]]
+    while [[ ! -S "$SOCKET_PATH" ]]
     do
         if [[ $RETRIES -eq 0 ]]; then
-            echo "[ERROR]: podman socket not found, exiting"
+            echo "[ERROR]: podman socket not found at $SOCKET_PATH, exiting"
             exit 1
         fi
-        echo "[INFO]: Waiting for podman to start. Checking again in 3s..."
+        echo "[INFO]: Waiting for podman socket at $SOCKET_PATH to start. Checking again in 3s..."
         sleep 3s
         RETRIES=$((RETRIES - 1))
     done
