@@ -260,6 +260,7 @@ spec:
         - io.openshift.tags="quay"
         - summary="Red Hat Quay image builder"
         - description="Red Hat Quay image builder"
+        - maintainer=support@redhat.com
       - name: BUILDAH_FORMAT
         value: $(params.buildah-format)
       runAfter:

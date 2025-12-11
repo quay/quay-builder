@@ -9,7 +9,7 @@ RUN sed -i 's/CGO_ENABLED=0 /CGO_ENABLED=1 /;s/containers_image_openpgp/& strict
 RUN cd /go/src/ && make build
 
 FROM registry.access.redhat.com/ubi8/podman
-LABEL maintainer "Quay devel<quay-devel@redhat.com>"
+LABEL version 3.14.6
 
 
 RUN set -ex\
