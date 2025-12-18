@@ -115,7 +115,7 @@ require (
 	github.com/opencontainers/runtime-spec v1.2.0 // indirect
 	github.com/opencontainers/runtime-tools v0.9.1-0.20241001195557-6c9570a1678f // indirect
 	github.com/opencontainers/selinux v1.11.1 // indirect
-	github.com/openshift/imagebuilder v1.2.15 // indirect
+	github.com/openshift/imagebuilder v1.2.19 // indirect
 	github.com/ostreedev/ostree-go v0.0.0-20210805093236-719684c64e4f // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/sftp v1.13.10 // indirect
