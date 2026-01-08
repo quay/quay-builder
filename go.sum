@@ -292,10 +292,10 @@ github.com/opencontainers/image-spec v1.1.1 h1:y0fUlFfIZhPF1W537XOLg0/fcx6zcHCJw
 github.com/opencontainers/image-spec v1.1.1/go.mod h1:qpqAh3Dmcf36wStyyWU+kCeDgrGnAve2nCC8+7h8Q0M=
 github.com/opencontainers/runc v1.2.6 h1:P7Hqg40bsMvQGCS4S7DJYhUZOISMLJOB2iGX5COWiPk=
 github.com/opencontainers/runc v1.2.6/go.mod h1:dOQeFo29xZKBNeRBI0B19mJtfHv68YgCTh1X+YphA+4=
-github.com/opencontainers/runtime-spec v1.2.1 h1:S4k4ryNgEpxW1dzyqffOmhI1BHYcjzU8lpJfSlR0xww=
-github.com/opencontainers/runtime-spec v1.2.1/go.mod h1:jwyrGlmzljRJv/Fgzds9SsS/C5hL+LL3ko9hs6T5lQ0=
-github.com/opencontainers/runtime-tools v0.9.1-0.20250303011046-260e151b8552 h1:CkXngT0nixZqQUPDVfwVs3GiuhfTqCMk0V+OoHpxIvA=
-github.com/opencontainers/runtime-tools v0.9.1-0.20250303011046-260e151b8552/go.mod h1:T487Kf80NeF2i0OyVXHiylg217e0buz8pQsa0T791RA=
+github.com/opencontainers/runtime-spec v1.3.0 h1:YZupQUdctfhpZy3TM39nN9Ika5CBWT5diQ8ibYCRkxg=
+github.com/opencontainers/runtime-spec v1.3.0/go.mod h1:jwyrGlmzljRJv/Fgzds9SsS/C5hL+LL3ko9hs6T5lQ0=
+github.com/opencontainers/runtime-tools v0.9.1-0.20251205004911-5e639034dcdc h1:82NlZLiQEB6Wp+nmASMlkHsEXz3Q0pXJbK7QO6ck5lo=
+github.com/opencontainers/runtime-tools v0.9.1-0.20251205004911-5e639034dcdc/go.mod h1:DKDEfzxvRkoQ6n9TGhxQgg2IM1lY4aM0eaQP4e3oElw=
 github.com/opencontainers/selinux v1.12.0 h1:6n5JV4Cf+4y0KNXW48TLj5DwfXpvWlxXplUkdTrmPb8=
 github.com/opencontainers/selinux v1.12.0/go.mod h1:BTPX+bjVbWGXw7ZZWUbdENt8w0htPSrlgOOysQaU62U=
 github.com/openshift/imagebuilder v1.2.16-0.20250224193648-e87e4e105fd8 h1:iPRNMpzJ4HEtIXseOxdIkgNYlp7HJShtEk7URm1BUSU=
@@ -371,8 +371,6 @@ github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/sylabs/sif/v2 v2.21.1 h1:GZ0b5//AFAqJEChd8wHV/uSKx/l1iuGYwjR8nx+4wPI=
 github.com/sylabs/sif/v2 v2.21.1/go.mod h1:YoqEGQnb5x/ItV653bawXHZJOXQaEWpGwHsSD3YePJI=
-github.com/syndtr/gocapability v0.0.0-20200815063812-42c35b437635 h1:kdXcSzyDtseVEc4yCz2qF8ZrQvIDBJLl4S1c3GCXmoI=
-github.com/syndtr/gocapability v0.0.0-20200815063812-42c35b437635/go.mod h1:hkRG7XYTFWNJGYcbNJQlaLq0fg1yr4J4t/NcTQtrfww=
 github.com/tchap/go-patricia/v2 v2.3.2 h1:xTHFutuitO2zqKAQ5rCROYgUb7Or/+IC3fts9/Yc7nM=
 github.com/tchap/go-patricia/v2 v2.3.2/go.mod h1:VZRHKAb53DLaG+nA9EaYYiaEx6YztwDlLElMsnSHD4k=
 github.com/tonistiigi/go-csvvalue v0.0.0-20240710180619-ddb21b71c0b4 h1:7I5c2Ig/5FgqkYOh/N87NzoyI9U15qUPXhDD8uCupv8=
