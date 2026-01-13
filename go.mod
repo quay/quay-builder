@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
-	github.com/containers/buildah v1.37.6
+	github.com/containers/buildah v1.42.2
 	github.com/containers/podman/v5 v5.2.5
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker v27.3.1+incompatible
