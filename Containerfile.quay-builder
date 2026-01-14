@@ -1,5 +1,5 @@
 # Strictly for fips build
-FROM registry.access.redhat.com/ubi8/go-toolset:1.25.3-1765294123 as build
+FROM registry.access.redhat.com/ubi8/go-toolset:1.25.3-1766363546 as build
 USER root
 RUN dnf install -y --setopt=tsflags=nodocs git
 COPY . /go/src/
