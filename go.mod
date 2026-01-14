@@ -7,7 +7,7 @@ require (
 	github.com/containers/buildah v1.42.2
 	github.com/containers/podman/v5 v5.7.1
 	github.com/distribution/reference v0.6.0
-	github.com/docker/docker v28.5.1+incompatible
+	github.com/docker/docker v28.5.2+incompatible
 	github.com/fsouza/go-dockerclient v1.12.2
 	github.com/golang/protobuf v1.5.4
 	github.com/moby/buildkit v0.25.1
