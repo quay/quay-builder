@@ -12,7 +12,7 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/moby/buildkit v0.25.1
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	google.golang.org/grpc v1.77.0
 	google.golang.org/protobuf v1.36.10
 )
