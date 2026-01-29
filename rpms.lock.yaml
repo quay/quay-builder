@@ -249,6 +249,13 @@ arches:
     name: openssl
     evr: 1:1.1.1k-14.el8_10
     sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/pam-1.3.1-39.el8_10.aarch64.rpm
+    repoid: ubi-8-for-aarch64-baseos-rpms
+    size: 760956
+    checksum: sha256:aaa134b795b6e6a121d41c20589af4a2bd19a109a1fad429652c55c72676a45b
+    name: pam
+    evr: 1.3.1-39.el8_10
+    sourcerpm: pam-1.3.1-39.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-Carp-1.42-396.el8.noarch.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 30928
@@ -496,10 +503,10 @@ arches:
     sourcerpm: util-linux-2.32.1-47.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/9ea47862fb67afc2e3be1c90b0830f22579363ac1729a2b798e57d28687f203a-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/c4f7d2002a92bbc062c12430c7594e7efa7e5789e3002a882330573272433a7d-modules.yaml.gz
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 55444
-    checksum: sha256:9ea47862fb67afc2e3be1c90b0830f22579363ac1729a2b798e57d28687f203a
+    size: 56756
+    checksum: sha256:c4f7d2002a92bbc062c12430c7594e7efa7e5789e3002a882330573272433a7d
 - arch: ppc64le
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/g/git-2.43.7-1.el8_10.ppc64le.rpm
@@ -754,6 +761,13 @@ arches:
     name: openssl
     evr: 1:1.1.1k-14.el8_10
     sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/pam-1.3.1-39.el8_10.ppc64le.rpm
+    repoid: ubi-8-for-ppc64le-baseos-rpms
+    size: 814188
+    checksum: sha256:124fb0871d7ec940aab122357dd21ff64954fc8e9ab9840046c2cf9a80900496
+    name: pam
+    evr: 1.3.1-39.el8_10
+    sourcerpm: pam-1.3.1-39.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-Carp-1.42-396.el8.noarch.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
     size: 30928
@@ -1001,10 +1015,10 @@ arches:
     sourcerpm: util-linux-2.32.1-47.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/91c7a887b9e34a42db1694e4772c9363d9a2350fc5d5fbf80ea9e4cc67f4863b-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/435d31a51af01ac3f9f0399eb62498b3313954eccda4b4cf90b9f73c032104d1-modules.yaml.gz
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 58211
-    checksum: sha256:91c7a887b9e34a42db1694e4772c9363d9a2350fc5d5fbf80ea9e4cc67f4863b
+    size: 58981
+    checksum: sha256:435d31a51af01ac3f9f0399eb62498b3313954eccda4b4cf90b9f73c032104d1
 - arch: s390x
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/g/git-2.43.7-1.el8_10.s390x.rpm
@@ -1252,6 +1266,13 @@ arches:
     name: openssl
     evr: 1:1.1.1k-14.el8_10
     sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/pam-1.3.1-39.el8_10.s390x.rpm
+    repoid: ubi-8-for-s390x-baseos-rpms
+    size: 745912
+    checksum: sha256:acce7bdddf4ac5c3a25f3042f3f90b490cf0e575c246d0b659a13699fe97e11f
+    name: pam
+    evr: 1.3.1-39.el8_10
+    sourcerpm: pam-1.3.1-39.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-Carp-1.42-396.el8.noarch.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 30928
@@ -1499,10 +1520,10 @@ arches:
     sourcerpm: util-linux-2.32.1-47.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/1523b0a29613ff47d85e6d6ba42d5280bbcd3f231296b49dfbc905760c8c506a-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/281764650e89e17c72a0809f3b392484c526b193672a47d3203a3c5857bd9dfc-modules.yaml.gz
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 57051
-    checksum: sha256:1523b0a29613ff47d85e6d6ba42d5280bbcd3f231296b49dfbc905760c8c506a
+    size: 56480
+    checksum: sha256:281764650e89e17c72a0809f3b392484c526b193672a47d3203a3c5857bd9dfc
 - arch: x86_64
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/g/git-2.43.7-1.el8_10.x86_64.rpm
@@ -1750,6 +1771,13 @@ arches:
     name: openssl
     evr: 1:1.1.1k-14.el8_10
     sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/pam-1.3.1-39.el8_10.x86_64.rpm
+    repoid: ubi-8-for-x86_64-baseos-rpms
+    size: 766824
+    checksum: sha256:55f3b294c9a4fbfaea0353a5ed38d15fb87fb9ca79f6cbfe4238923bd76cf4f3
+    name: pam
+    evr: 1.3.1-39.el8_10
+    sourcerpm: pam-1.3.1-39.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-Carp-1.42-396.el8.noarch.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 30928
@@ -1997,7 +2025,7 @@ arches:
     sourcerpm: util-linux-2.32.1-47.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/3c9cf496226de31c4812c91fc07b125796fb32ef698e1470957a397762554f09-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/d32768f158577f99ab5f8b7aca32b0244d82e5598ce2936f74370a1c046a29ac-modules.yaml.gz
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 59261
-    checksum: sha256:3c9cf496226de31c4812c91fc07b125796fb32ef698e1470957a397762554f09
+    size: 59425
+    checksum: sha256:d32768f158577f99ab5f8b7aca32b0244d82e5598ce2936f74370a1c046a29ac
