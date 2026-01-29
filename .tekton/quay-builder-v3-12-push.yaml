@@ -254,7 +254,7 @@ spec:
       - name: LABELS
         value:
         - com.redhat.component="quay-builder-container"
-        - name="quay/quay-builder-rhel8"
+        - name=quay/quay-builder-rhel8
         - io.k8s.display-name="Red Hat Quay - Builder"
         - io.k8s.description="Red Hat Quay image builder"
         - io.openshift.tags="quay"
