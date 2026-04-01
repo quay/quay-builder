@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:1.25.3-1765294123 as build
+FROM registry.access.redhat.com/ubi8/go-toolset:1.25.5 as build
 USER root
 RUN dnf install -y --setopt=tsflags=nodocs git
 COPY . /go/src/
@@ -7,9 +7,10 @@ RUN cd /go/src/ && make build
 FROM registry.access.redhat.com/ubi8/podman
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
-RUN set -ex\
-	; dnf install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git wget \
-	; dnf -y -q clean all
+# Avoid hermetic dnf openssl/git skew; reuse binaries from the build stage (same UBI8 + arch).
+COPY --from=build /usr/bin/openssl /usr/bin/git /usr/bin/wget /usr/bin/
+COPY --from=build /usr/libexec/git-core /usr/libexec/git-core
+COPY --from=build /usr/share/git-core /usr/share/git-core
 
 COPY --from=build /go/src/bin/quay-builder /usr/local/bin
 COPY buildpack/ssh-git.sh /
