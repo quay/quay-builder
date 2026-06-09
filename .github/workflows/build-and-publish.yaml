@@ -36,19 +36,23 @@ jobs:
           echo "::set-output name=version::${BRANCH_NAME/${{ env.BRANCH_PREFIX }}/}"
 
       - name: install ibmcli and setup ibm login
+        env:
+          IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
         run: |
           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-          ibmcloud login -q --apikey ${{ secrets.IBMCLOUD_API_KEY }} -r eu-gb
+          ibmcloud login -q --apikey "$IBMCLOUD_API_KEY" -r eu-gb
           ibmcloud plugin install vpc-infrastructure
 
       - name: Add rule to VPC
         id: sg-rule-id
+        env:
+          SG_ID: ${{ secrets.SG_ID }}
         run: |
           cidr=$(dig +short myip.opendns.com @resolver1.opendns.com)
-          echo $cidr
-          SGRID=$(ibmcloud is security-group-rule-add --sg ${{ secrets.SG_ID }} --direction=inbound --protocol=tcp --port-min=22 --port-max=22 --remote=$cidr --output JSON | jq -r '.id')
-          echo $SGRID
-          echo "rule_id=${SGRID}" >> $GITHUB_OUTPUT
+          echo "$cidr"
+          SGRID=$(ibmcloud is security-group-rule-add --sg "$SG_ID" --direction=inbound --protocol=tcp --port-min=22 --port-max=22 --remote="$cidr" --output JSON | jq -r '.id')
+          echo "$SGRID"
+          echo "rule_id=${SGRID}" >> "$GITHUB_OUTPUT"
 
       - name: Setup SSH config for builders
         env:
@@ -118,13 +122,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install ibmcli and login
+        env:
+          IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
         run: |
           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-          ibmcloud login -q --apikey ${{ secrets.IBMCLOUD_API_KEY }} -r eu-gb
+          ibmcloud login -q --apikey "$IBMCLOUD_API_KEY" -r eu-gb
           ibmcloud plugin install vpc-infrastructure
 
       - name: Delete VPC security group rule
+        env:
+          SG_ID: ${{ secrets.SG_ID }}
+          SG_RULE_ID: ${{ needs.build-and-publish.outputs.sg_rule_id }}
         run: |
-          ibmcloud is security-group-rule-delete \
-            ${{ secrets.SG_ID }} \
-            ${{ needs.build-and-publish.outputs.sg_rule_id }} -f
+          ibmcloud is security-group-rule-delete "$SG_ID" "$SG_RULE_ID" -f
