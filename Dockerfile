@@ -8,7 +8,7 @@ FROM registry.access.redhat.com/ubi8/podman
 LABEL maintainer "Quay devel<quay-devel@redhat.com>"
 
 RUN set -ex\
-	; dnf install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git wget \
+	; dnf install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False wget \
 	; dnf -y -q clean all
 
 COPY --from=build /go/src/bin/quay-builder /usr/local/bin
