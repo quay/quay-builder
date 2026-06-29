@@ -61,3 +61,23 @@ This generates image with tag `quay.io/projectquay/quay-builder:latest-alpine`.
 make build-centos
 ```
 This generates image with tag `quay.io/projectquay/quay-builder:latest-centos`.
+
+## Contextification Addendum
+
+```mermaid
+flowchart LR
+    quay[Quay build manager]
+    builder[quay-builder]
+    context[buildctx]
+    runtime[Podman or Docker]
+    registry[Quay registry]
+
+    quay <--> builder
+    builder --> context
+    builder --> runtime
+    runtime --> registry
+```
+
+Key paths: `cmd/quay-builder/main.go`, `buildctx/`, `buildpack/`, `containerclient/`, `rpc/`, and `buildman_pb/`. Use `make test`, `make build`, and `make build-ubi8`.
+
+Keep build directories isolated and cleaned up. Do not log registry credentials or build args.
