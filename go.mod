@@ -1,8 +1,6 @@
 module github.com/quay/quay-builder
 
-go 1.23.0
-
-toolchain go1.23.6
+go 1.25.0
 
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
@@ -64,13 +62,20 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/analysis v0.23.0 // indirect
 	github.com/go-openapi/errors v0.22.0 // indirect
-	github.com/go-openapi/jsonpointer v0.21.0 // indirect
-	github.com/go-openapi/jsonreference v0.21.0 // indirect
+	github.com/go-openapi/jsonpointer v1.0.0 // indirect
+	github.com/go-openapi/jsonreference v1.0.1 // indirect
 	github.com/go-openapi/loads v0.22.0 // indirect
 	github.com/go-openapi/runtime v0.28.0 // indirect
-	github.com/go-openapi/spec v0.21.0 // indirect
+	github.com/go-openapi/spec v1.0.0 // indirect
 	github.com/go-openapi/strfmt v0.23.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
+	github.com/go-openapi/swag/conv v0.29.1 // indirect
+	github.com/go-openapi/swag/jsonutils v0.29.1 // indirect
+	github.com/go-openapi/swag/loading v0.29.1 // indirect
+	github.com/go-openapi/swag/pools v0.29.1 // indirect
+	github.com/go-openapi/swag/stringutils v0.29.1 // indirect
+	github.com/go-openapi/swag/typeutils v0.29.1 // indirect
+	github.com/go-openapi/swag/yamlutils v0.29.1 // indirect
 	github.com/go-openapi/validate v0.24.0 // indirect
 	github.com/godbus/dbus/v5 v5.1.1-0.20240921181615-a817f3cc4a9e // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -152,6 +157,7 @@ require (
 	go.opentelemetry.io/otel v1.28.0 // indirect
 	go.opentelemetry.io/otel/metric v1.28.0 // indirect
 	go.opentelemetry.io/otel/trace v1.28.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
 	golang.org/x/mod v0.21.0 // indirect
