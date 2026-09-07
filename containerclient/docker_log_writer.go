@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"io/ioutil"
 	"runtime"
 
 	log "github.com/sirupsen/logrus"
@@ -73,7 +72,7 @@ func (w *DockerRPCWriter) Write(p []byte) (n int, err error) {
 			// Docker was too large to fit into the single Write call. Therefore, we
 			// store any unparsed data and prepend it on the next call.
 			var bufferedData []byte
-			bufferedData, err = ioutil.ReadAll(dec.Buffered())
+			bufferedData, err = io.ReadAll(dec.Buffered())
 			if err != nil {
 				log.Fatalf("Error when reading buffered logs: %v", err)
 			}
@@ -81,7 +80,7 @@ func (w *DockerRPCWriter) Write(p []byte) (n int, err error) {
 			break
 		} else if err != nil {
 			// Try to determine what we failed to decode.
-			entry, readErr := ioutil.ReadAll(dec.Buffered())
+			entry, readErr := io.ReadAll(dec.Buffered())
 			if readErr != nil {
 				entry = []byte("unknown")
 			}
