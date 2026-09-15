@@ -1,0 +1,43 @@
+FROM registry.redhat.io/ubi9/go-toolset:1.25 AS build
+
+USER root
+RUN dnf install -y --setopt=tsflags=nodocs git
+
+COPY . /go/src/
+
+RUN sed -i 's/CGO_ENABLED=0 /CGO_ENABLED=1 /;s/containers_image_openpgp/& strictfipsruntime/' /go/src/Makefile
+RUN cd /go/src/ && make build
+
+FROM registry.redhat.io/ubi9/podman:latest
+
+LABEL com.redhat.component="quay-builder-container"
+LABEL name="quay/quay-builder-rhel9"
+LABEL io.k8s.display-name="Red Hat Quay - Builder"
+LABEL io.k8s.description="Red Hat Quay image builder"
+LABEL io.openshift.tags="quay"
+LABEL summary="Red Hat Quay image builder"
+LABEL description="Red Hat Quay image builder"
+LABEL vendor="Red Hat, Inc."
+LABEL maintainer="quay-devel@redhat.com"
+
+RUN set -ex\
+	; dnf update -y --setopt=tsflags=nodocs \
+	; dnf install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git wget \
+	; dnf -y -q clean all
+
+COPY --from=build /go/src/bin/quay-builder /usr/local/bin
+COPY buildpack/ssh-git.sh /
+COPY entrypoint.sh /home/podman/entrypoint.sh
+
+RUN touch /etc/subgid /etc/subuid && \
+    chmod g=u /etc/subgid /etc/subuid /etc/passwd && \
+    echo 'podman:100000:65536' > /etc/subuid && echo 'podman:100000:65536' > /etc/subgid && \
+    mkdir -p /home/podman/.config/containers && \
+    (echo '[storage]';echo 'driver = "vfs"') > /home/podman/.config/containers/storage.conf && \
+    sed -i 's/short-name-mode="enforcing"/short-name-mode="permissive"/g' /etc/containers/registries.conf && \
+	mkdir /certs /home/podman/.config/cni && chown podman:podman /certs /home/podman/.config/cni
+
+VOLUME [ "/certs" ]
+WORKDIR /home/podman
+USER podman
+ENTRYPOINT ["sh", "/home/podman/entrypoint.sh"]
