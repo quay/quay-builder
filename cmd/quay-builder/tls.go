@@ -3,7 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"io/ioutil"
+	"os"
 )
 
 const serverName = "quay-services"
@@ -26,7 +26,7 @@ func LoadTLSClientConfig(certFile, keyFile, caFile string) (*tls.Config, error) 
 
 	var caCertPool *x509.CertPool
 	if caFile != "" {
-		caCert, err := ioutil.ReadFile(caFile)
+		caCert, err := os.ReadFile(caFile)
 		if err != nil {
 			return nil, err
 		}

@@ -2,7 +2,6 @@ package buildpack
 
 import (
 	"bytes"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -61,7 +60,7 @@ func TestDownload(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, err := ioutil.ReadFile(filepath.Join(path, "Dockerfile"))
+	b, err := os.ReadFile(filepath.Join(path, "Dockerfile"))
 	if err != nil {
 		t.Error(err)
 	} else if string(b) != "#(nop): test\n" {
