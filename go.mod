@@ -8,9 +8,10 @@ require (
 	github.com/containers/podman/v5 v5.8.4
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker v28.5.2+incompatible
-	github.com/fsouza/go-dockerclient v1.12.2
+	github.com/fsouza/go-dockerclient v1.12.4
 	github.com/golang/protobuf v1.5.4
 	github.com/moby/buildkit v0.31.2
+	github.com/moby/go-archive v0.3.3
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/sirupsen/logrus v1.9.4
 	google.golang.org/grpc v1.81.1
@@ -66,7 +67,7 @@ require (
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kevinburke/ssh_config v1.4.0 // indirect
-	github.com/klauspost/compress v1.18.6 // indirect
+	github.com/klauspost/compress v1.18.7 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/manifoldco/promptui v0.9.0 // indirect
@@ -76,13 +77,12 @@ require (
 	github.com/miekg/pkcs11 v1.1.1 // indirect
 	github.com/mistifyio/go-zfs/v3 v3.1.0 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
-	github.com/moby/go-archive v0.2.0 // indirect
 	github.com/moby/patternmatcher v0.6.1 // indirect
 	github.com/moby/sys/atomicwriter v0.1.0 // indirect
 	github.com/moby/sys/capability v0.4.0 // indirect
 	github.com/moby/sys/mountinfo v0.7.2 // indirect
 	github.com/moby/sys/sequential v0.7.0 // indirect
-	github.com/moby/sys/user v0.4.0 // indirect
+	github.com/moby/sys/user v0.4.1 // indirect
 	github.com/moby/sys/userns v0.1.0 // indirect
 	github.com/moby/term v0.5.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -148,14 +148,12 @@ require (
 	tags.cncf.io/container-device-interface/specs-go v1.1.0 // indirect
 )
 
-// docker v28.5.x and fsouza/go-dockerclient expect moby/go-archive v0.1.x root API (Compression, Uncompressed).
 // go.podman.io/storage expects filepath-securejoin to re-export OpenInRoot/Reopen at the root (removed in v0.6.0).
 // containers/podman v5.7.x assigns int64 to LinuxPids.Limit; runtime-spec v1.3.0 changed that field to *int64.
 // runtime-tools must match the same specs-go API as runtime-spec (see runtime-tools generate_linux.go).
 // CDI v1.1.x expects runtime-spec v1.3.x (NetDevices, LinuxIntelRdt); pin CDI v1.0.x with runtime-spec v1.2.1.
 replace (
 	github.com/cyphar/filepath-securejoin => github.com/cyphar/filepath-securejoin v0.5.2
-	github.com/moby/go-archive => github.com/moby/go-archive v0.1.0
 	github.com/opencontainers/runtime-spec => github.com/opencontainers/runtime-spec v1.2.1
 	github.com/opencontainers/runtime-tools => github.com/opencontainers/runtime-tools v0.9.1-0.20250523060157-0ea5ed0382a2
 	tags.cncf.io/container-device-interface => tags.cncf.io/container-device-interface v1.0.1

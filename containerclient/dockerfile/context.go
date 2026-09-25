@@ -7,8 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/docker/docker/pkg/archive"
 	"github.com/docker/docker/pkg/tarsum"
+	archive "github.com/moby/go-archive"
+	"github.com/moby/go-archive/compression"
 )
 
 const unix1980 int64 = 315532800
@@ -22,7 +23,7 @@ func loadBuildContext(buildContextDirectory string) (tarsum.TarSum, error) {
 	}
 
 	// Compress our build context directory into a tar.
-	tarred, err := archive.Tar(buildContextDirectory, archive.Uncompressed)
+	tarred, err := archive.Tar(buildContextDirectory, compression.None)
 	if err != nil {
 		return nil, err
 	}
