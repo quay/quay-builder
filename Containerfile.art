@@ -8,7 +8,7 @@ COPY . /go/src/
 RUN sed -i 's/CGO_ENABLED=0 /CGO_ENABLED=1 /;s/containers_image_openpgp/& strictfipsruntime/' /go/src/Makefile
 RUN cd /go/src/ && make build
 
-FROM registry.redhat.io/ubi8/podman:8
+FROM registry.redhat.io/ubi8/podman
 
 LABEL com.redhat.component="quay-builder-container"
 LABEL name="quay/quay-builder-rhel8"
