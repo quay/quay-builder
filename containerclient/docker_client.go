@@ -3,7 +3,6 @@ package containerclient
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -13,7 +12,7 @@ import (
 
 func buildTLSTransport(basePath string) (*http.Transport, error) {
 	roots := x509.NewCertPool()
-	pemData, err := ioutil.ReadFile(basePath + "/ca.pem")
+	pemData, err := os.ReadFile(basePath + "/ca.pem")
 	if err != nil {
 		return nil, err
 	}
