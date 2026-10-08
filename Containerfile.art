@@ -20,8 +20,11 @@ LABEL description="Red Hat Quay image builder"
 LABEL vendor="Red Hat, Inc."
 LABEL maintainer="quay-devel@redhat.com"
 
+# Exclude glibc* from update: ubi8/podman base image ships glibc-minimal-langpack
+# with an exact version pin on glibc. Updating glibc without also updating the
+# langpack causes a dependency conflict (glibc .43 vs langpack requiring .40).
 RUN set -ex\
-	; dnf update -y --setopt=tsflags=nodocs \
+	; dnf update -y --setopt=tsflags=nodocs --exclude=glibc* \
 	; dnf install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False git wget \
 	; dnf -y -q clean all
 
