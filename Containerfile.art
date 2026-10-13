@@ -40,4 +40,5 @@ RUN touch /etc/subgid /etc/subuid && \
 VOLUME [ "/certs" ]
 WORKDIR /home/podman
 USER podman
+# ART build trigger
 ENTRYPOINT ["sh", "/home/podman/entrypoint.sh"]
