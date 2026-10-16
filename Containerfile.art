@@ -44,3 +44,4 @@ VOLUME [ "/certs" ]
 WORKDIR /home/podman
 USER podman
 ENTRYPOINT ["sh", "/home/podman/entrypoint.sh"]
+
