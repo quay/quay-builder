@@ -1,8 +1,6 @@
 module github.com/quay/quay-builder
 
-go 1.23.0
-
-toolchain go1.23.6
+go 1.24
 
 require (
 	code.cloudfoundry.org/archiver v0.0.0-20230612152321-46722cbc3f99
@@ -100,7 +98,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/moby/patternmatcher v0.6.0 // indirect
-	github.com/moby/sys/capability v0.3.0 // indirect
+	github.com/moby/sys/capability v0.5.0 // indirect
 	github.com/moby/sys/mountinfo v0.7.2 // indirect
 	github.com/moby/sys/sequential v0.6.0 // indirect
 	github.com/moby/sys/user v0.3.0 // indirect
