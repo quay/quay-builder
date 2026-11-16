@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"os"
 	"strings"
 	"time"
@@ -97,10 +98,22 @@ func main() {
 	log.Infof("starting build")
 	_, err = build(dockerHost, containerRuntime, rpcClient, buildargs, hbCancel)
 	if err != nil {
+		reportBuildError(rpcClient, err)
 		log.Fatalf("failed to build buildpack: %s", err)
 	}
 
 	log.Infof("done")
+}
+
+// reportBuildError moves a failed image build to the error phase so the build
+// manager does not wait for the job to expire and mark it internalerror.
+func reportBuildError(client rpc.Client, err error) {
+	if !errors.As(err, &rpc.BuildError{}) {
+		return
+	}
+	if perr := client.SetPhase(rpc.Error, nil); perr != nil {
+		log.Errorf("failed to update phase to `error`: %s", perr)
+	}
 }
 
 func build(dockerHost, containerRuntime string, client rpc.Client, args *rpc.BuildArgs, hbCanceller context.CancelFunc) (*rpc.BuildMetadata, error) {
