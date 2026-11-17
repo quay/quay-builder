@@ -18,7 +18,11 @@ vendor:
 
 test: vendor
 	@go vet ./...
-	@go test -v ./...
+	@go test -v -covermode=atomic -coverprofile=coverage.out ./...
+
+coverage: test
+	@go tool cover -func=coverage.out -o coverage.txt
+	@go tool cover -html=coverage.out -o coverage.html
 
 build: bin/quay-builder
 
