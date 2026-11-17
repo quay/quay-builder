@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -97,7 +96,7 @@ func download(url string) (string, error) {
 // extractToTempDir extracts a body into a temporary directory and returns the path.
 func extractToTempDir(body io.Reader, xtractor extractor.Extractor) (string, error) {
 	// Create a temporary file.
-	archiveFile, err := ioutil.TempFile("", "build_archive")
+	archiveFile, err := os.CreateTemp("", "build_archive")
 	if err != nil {
 		return "", err
 	}
@@ -111,7 +110,7 @@ func extractToTempDir(body io.Reader, xtractor extractor.Extractor) (string, err
 	}
 
 	// Create a temporary directory for the build pack.
-	tempDir, err := ioutil.TempDir("", "build_pack")
+	tempDir, err := os.MkdirTemp("", "build_pack")
 	if err != nil {
 		return "", err
 	}
@@ -128,7 +127,7 @@ func extractToTempDir(body io.Reader, xtractor extractor.Extractor) (string, err
 // dockerfileTempDir creates a temporary directory, copying over the dockerfile.
 func dockerfileTempDir(dockerfile io.Reader) (string, error) {
 	// Create a directory containing the Dockerfile directly.
-	tempDir, err := ioutil.TempDir("", "build_pack")
+	tempDir, err := os.MkdirTemp("", "build_pack")
 	if err != nil {
 		return "", err
 	}
@@ -141,7 +140,7 @@ func dockerfileTempDir(dockerfile io.Reader) (string, error) {
 	defer fo.Close()
 
 	// Read the Dockerfile bytes.
-	bytes, err := ioutil.ReadAll(dockerfile)
+	bytes, err := io.ReadAll(dockerfile)
 	if err != nil {
 		return "", err
 	}
@@ -190,7 +189,7 @@ func extractBuildPackage(body io.Reader, mimetype string) (string, error) {
 // Clone creates a temporary directory and `git clone`s a repository into it.
 func Clone(url, sha, privateKey string) (string, error) {
 	// Create a temp file for the ssh key.
-	keyFile, err := ioutil.TempFile("", "ssh_key")
+	keyFile, err := os.CreateTemp("", "ssh_key")
 	if err != nil {
 		return "", err
 	}
@@ -215,7 +214,7 @@ func Clone(url, sha, privateKey string) (string, error) {
 	}
 
 	// Create a temp directory to clone the buildpack into.
-	bpPath, err := ioutil.TempDir("", "build_pack")
+	bpPath, err := os.MkdirTemp("", "build_pack")
 	if err != nil {
 		return "", err
 	}
